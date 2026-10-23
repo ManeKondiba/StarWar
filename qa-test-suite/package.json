@@ -1,0 +1,22 @@
+{
+  "name": "starwars-qa-test-suite",
+  "version": "1.0.0",
+  "description": "Automated QA Verification Suite for StarWars React Native App Assignment",
+  "main": "runner.js",
+  "scripts": {
+    "test": "node runner.js",
+    "test:auth": "node -e \"const { runAuthValidationTests } = require('./auth_validation.test'); console.log(runAuthValidationTests());\"",
+    "test:i18n": "node -e \"const { runI18nParityTests } = require('./i18n_parity.test'); console.log(runI18nParityTests());\"",
+    "test:security": "node -e \"const { runSecurityAuditTests } = require('./security_audit.test'); console.log(runSecurityAuditTests());\"",
+    "test:swapi": "node -e \"const { runSwapiApiTests } = require('./swapi_api.test'); runSwapiApiTests().then(console.log);\""
+  },
+  "keywords": [
+    "qa",
+    "testing",
+    "react-native",
+    "starwars",
+    "security-audit"
+  ],
+  "author": "Junior QA Engineer Candidate",
+  "license": "ISC"
+}

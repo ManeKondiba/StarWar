@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+.yarn/
+.bundle/
+
+# Build artifacts
+android/app/build/
+android/.gradle/
+ios/build/
+ios/Pods/
+*.bundle
+
+# Logs & Environment
+*.log
+.env
+.DS_Store
+Thumbs.db
