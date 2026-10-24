@@ -307,6 +307,29 @@ To rigorously assess the quality, functional completeness, platform compatibilit
 - **Expected Result:** UI dynamically calculates dimensions and reflows.
 - **Actual Result:** Components use frozen portrait width/height, causing severe overflow and clipped views.
 
+### DEF-08: Landscape Screen Unscrollable & UI Stuck (Missing ScrollView)
+- **Severity:** High | **Category:** Usability & Compatibility (Requirement 12)
+- **Steps to Reproduce:** Open LoginScreen, ProfileScreen, or modals; rotate device to Landscape; attempt to scroll down.
+- **Expected Result:** Content should scroll smoothly, allowing access to buttons and fields below the fold.
+- **Actual Result:** The screen cannot be scrolled at all; touch gestures produce no action. Buttons like "LOGIN" and "Create a new account" are completely inaccessible.
+- **Root Cause:** Root containers use static `<View>` and `<SafeAreaView>` instead of `<ScrollView contentContainerStyle={{ flexGrow: 1 }}>`.
+
+### DEF-09: Unbounded Input Length / Missing Character Limits on Registration Inputs
+- **Severity:** Medium | **Category:** Data Validation, UI Robustness & Security (CWE-400)
+- **Steps to Reproduce:**
+  1. Open Register Screen.
+  2. In "First Name", "Last Name", "Email", or "Password", paste a 5,000+ character string.
+  3. Submit the form.
+- **Expected Result:** Input fields should enforce reasonable character limits via `maxLength` (e.g. First Name: 50, Last Name: 50, Email: 254, Password: 128) and display character count or validation errors.
+- **Actual Result:** `TextInput` components lack the `maxLength` property, and `handleSave()` has no string length bounds. The app accepts arbitrary string lengths of any size, leading to:
+  - UI breakage across avatar initials (`generateInitials()`), user cards, and member lists.
+  - Excessive memory consumption in local MMKV storage.
+  - Risk of Client-Side Denial of Service (ReDoS) or freezing during regex validation.
+- **Developer Remedy:** Add `maxLength` props to all `TextInput` components and add boundary checks in validation rules:
+  ```jsx
+  <TextInput style={styles.input} maxLength={50} ... />
+  ```
+
 ---
 
 ## 6. Recommendations & Technical Remedies
