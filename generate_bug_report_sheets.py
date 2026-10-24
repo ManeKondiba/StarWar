@@ -108,6 +108,7 @@ ws_bugs = wb.create_sheet(title="Defect Log with Evidence")
 ws_bugs.views.sheetView[0].showGridLines = True
 
 headers_bugs = [
+    "No.",
     "Defect ID",
     "Defect Title / Summary",
     "Req Ref",
@@ -474,19 +475,22 @@ bugs_data = [
     ]
 ]
 
+# Add sequential index (1 to 19) to bugs_data
+bugs_data_with_no = [[idx + 1] + bug for idx, bug in enumerate(bugs_data)]
+
 row_idx_bugs = 2
-for bug in bugs_data:
+for bug in bugs_data_with_no:
     for c_idx, val in enumerate(bug, start=1):
         cell = ws_bugs.cell(row=row_idx_bugs, column=c_idx, value=val)
         cell.border = THIN_BORDER
         cell.alignment = Alignment(vertical="top", wrap_text=True)
         
-        # Center align short columns
-        if c_idx in [1, 3, 4, 5, 6, 7]:
+        # Center align short columns (No, Defect ID, Req, Category, Severity, Priority, Status)
+        if c_idx in [1, 2, 4, 5, 6, 7, 8]:
             cell.alignment = Alignment(horizontal="center", vertical="top")
         
         # Severity coloring
-        if c_idx == 5:
+        if c_idx == 6:
             if val in ["Critical", "Blocker"]:
                 cell.fill = CRITICAL_FILL
                 cell.font = CRITICAL_FONT
@@ -501,25 +505,29 @@ for bug in bugs_data:
 
 # Column widths for Master Bug Log
 bug_col_widths = {
-    1: 14,  # Defect ID
-    2: 32,  # Title
-    3: 12,  # Req
-    4: 18,  # Category
-    5: 14,  # Severity
-    6: 10,  # Priority
-    7: 12,  # Status
-    8: 22,  # Environment
-    9: 35,  # Steps
-    10: 30, # Expected
-    11: 35, # Actual
-    12: 45, # Evidence
-    13: 35, # Root Cause
-    14: 40  # Fix
+    1: 6,   # No.
+    2: 14,  # Defect ID
+    3: 32,  # Title
+    4: 12,  # Req
+    5: 18,  # Category
+    6: 14,  # Severity
+    7: 10,  # Priority
+    8: 12,  # Status
+    9: 22,  # Environment
+    10: 35, # Steps
+    11: 30, # Expected
+    12: 35, # Actual
+    13: 45, # Evidence
+    14: 35, # Root Cause
+    15: 40  # Fix
 }
 
 for col_idx, width in bug_col_widths.items():
     col_letter = get_column_letter(col_idx)
     ws_bugs.column_dimensions[col_letter].width = width
+
+# Set Defect Log with Evidence as the active (default open) sheet
+wb.active = ws_bugs
 
 # Save Excel Bug Report
 bug_excel_path = "C:/Users/HP/Desktop/StarWar/StarWars_QA_Bug_Report.xlsx"
@@ -528,9 +536,11 @@ print("Bug Report Excel generated successfully:", bug_excel_path)
 
 # Also save CSV version
 bug_csv_path = "C:/Users/HP/Desktop/StarWar/StarWars_QA_Bug_Report.csv"
-with open(bug_csv_path, mode="w", newline="", encoding="utf-8-sig") as f:
-    writer = csv.writer(f)
-    writer.writerow(headers_bugs)
-    writer.writerows(bugs_data)
-
-print("Bug Report CSV generated successfully:", bug_csv_path)
+try:
+    with open(bug_csv_path, mode="w", newline="", encoding="utf-8-sig") as f:
+        writer = csv.writer(f)
+        writer.writerow(headers_bugs)
+        writer.writerows(bugs_data_with_no)
+    print("Bug Report CSV generated successfully:", bug_csv_path)
+except PermissionError:
+    print("Notice: StarWars_QA_Bug_Report.csv is currently open in Excel. Please close it if you want to overwrite the CSV as well.")
