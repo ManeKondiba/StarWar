@@ -111,6 +111,7 @@ headers_bugs = [
     "No.",
     "Defect ID",
     "Defect Title / Summary",
+    "Description",
     "Req Ref",
     "Category",
     "Severity",
@@ -136,6 +137,7 @@ bugs_data = [
     [
         "SEC-01",
         "User Passwords Saved in Plain Text Without Encryption",
+        "When a user registers or logs into the app, their password is saved in local phone storage as completely unencrypted plain text. Any person or malicious app with physical or ADB file access can read all stored passwords without needing any decryption keys.",
         "Req 11",
         "Security",
         "Critical",
@@ -154,6 +156,7 @@ bugs_data = [
     [
         "DEF-14",
         "Camera Screen Shows 'Permission Not Granted' Even When Allowed (Blocks Registration)",
+        "Even after a user grants camera permissions in the Android system settings, opening the camera inside the app immediately displays a black screen with an error saying 'Camera permission is not granted'. This prevents the user from taking a profile photo and completely blocks account registration.",
         "Req 2 & 1",
         "Functional",
         "Blocker",
@@ -172,6 +175,7 @@ bugs_data = [
     [
         "DEF-01",
         "Denying Location During Registration Permanently Locks Out the User's Email",
+        "During account registration, the application saves the user's account details into storage before the location permission dialog is answered. If the user taps 'Deny' on location, the registration aborts, but their email is permanently saved, blocking them from ever registering again with that email.",
         "Req 1",
         "Functional",
         "High",
@@ -190,6 +194,7 @@ bugs_data = [
     [
         "DEF-04",
         "App Blocks User from Logging In if Location (GPS) Permission is Denied",
+        "The login screen strictly requires active GPS location access before allowing a user to sign in. If a user has GPS disabled or denies location permission, the app refuses to log them in, preventing legitimate users from accessing their account.",
         "Req 3",
         "Usability / Auth",
         "High",
@@ -208,6 +213,7 @@ bugs_data = [
     [
         "DEF-08",
         "Screen Gets Stuck and Cannot Scroll When Phone is in Landscape Mode",
+        "When the phone is rotated into landscape mode on the login or profile screen, the interface cannot be scrolled vertically. Essential action buttons like 'LOGIN' and 'Register' get pushed below the visible screen area and cannot be reached by the user.",
         "Req 12",
         "Compatibility",
         "High",
@@ -226,6 +232,7 @@ bugs_data = [
     [
         "DEF-05",
         "'Join Group' Button Disappears When Language is Switched to Indonesian",
+        "When the application language is switched to Indonesian, the 'Join Group' button completely disappears from the group details screen. This prevents Indonesian-speaking users from joining any community groups.",
         "Req 7 & 13",
         "Functional / Localization",
         "High",
@@ -244,6 +251,7 @@ bugs_data = [
     [
         "DEF-11",
         "App Runs Slow and Crashes Because Profile Photos Are Stored as Giant Text",
+        "Profile pictures captured by the camera are saved into local storage as enormous uncompressed Base64 text strings containing over 150,000 characters per user. As more users join groups, this causes severe memory lag and crashes the app with Out-Of-Memory errors.",
         "Req 2 & Task 4",
         "Performance / Memory",
         "High",
@@ -262,6 +270,7 @@ bugs_data = [
     [
         "DEF-07",
         "Rotating Phone Between Portrait and Landscape Distorts Layout and Pie Chart",
+        "Screen dimensions are measured and permanently frozen only once when the app launches. When the user rotates their device between portrait and landscape, the screen measurements do not update, causing the layout, pie charts, and navigation bars to distort and overflow.",
         "Req 12",
         "Compatibility",
         "High",
@@ -280,6 +289,7 @@ bugs_data = [
     [
         "SEC-02",
         "Secret Google Maps API Key is Hardcoded and Exposed in App Code",
+        "The production Google Maps API key is hardcoded directly in the public Android manifest file. Because there are no restrictions on the key, anyone can decompile the APK, steal the API key, and incur unauthorized billing charges.",
         "Req 11",
         "Security",
         "High",
@@ -298,6 +308,7 @@ bugs_data = [
     [
         "SEC-03",
         "Insecure HTTP Connections Allowed on iOS Devices (ATS Disabled)",
+        "The iOS configuration file has Apple Transport Security disabled (NSAllowsArbitraryLoads is set to true). This allows the application to communicate over insecure, unencrypted HTTP connections, exposing user data to eavesdropping on public Wi-Fi networks.",
         "Req 11",
         "Security",
         "High",
@@ -316,6 +327,7 @@ bugs_data = [
     [
         "SEC-04",
         "Release App is Signed with an Insecure Test Key Instead of a Production Key",
+        "The production release build of the Android app is configured to be signed with the public debug keystore instead of an official secure production key. This compromises the authenticity and integrity of the published app.",
         "Req 11",
         "Security / Build",
         "High",
@@ -334,6 +346,7 @@ bugs_data = [
     [
         "DEF-02",
         "Cannot Pick Profile Photos from Phone Gallery (Only Camera Available)",
+        "Requirement 2 specifies that users should be able to upload profile pictures from either the camera or the photo library. However, the app only opens the camera and provides no option to pick existing photos from the device gallery.",
         "Req 2",
         "Functional",
         "Medium",
@@ -352,6 +365,7 @@ bugs_data = [
     [
         "DEF-03",
         "Character Search Does Not Filter Results (Always Shows All 82 People)",
+        "The search input on character and starship selection screens fails to filter results. Because the public SWAPI mirror is a static file host that ignores URL search queries, typing any name continues to display all 82 items in the list.",
         "Req 4 & 9",
         "Functional",
         "Medium",
@@ -370,6 +384,7 @@ bugs_data = [
     [
         "DEF-06",
         "Interactive Map is Disabled and Blank in Group Details Screen",
+        "Requirement 8 states that group details should display an interactive map showing where members are located. In the current app, the map view component has been completely commented out in the code, showing only raw GPS numbers instead of a real map.",
         "Req 8",
         "Functional",
         "Medium",
@@ -388,6 +403,7 @@ bugs_data = [
     [
         "DEF-09",
         "No Character Limits on Inputs (Users Can Paste Unlimited 10,000+ Letters)",
+        "Input boxes on the registration and login forms lack character limits (maxLength). Users can paste tens of thousands of characters into name, email, or password fields, causing layout distortion and excessive database bloat.",
         "Req 1 & 3",
         "Validation / UX",
         "Medium",
@@ -406,6 +422,7 @@ bugs_data = [
     [
         "DEF-15",
         "Login Screen Unnecessarily Re-Checks Password Complexity Rules on Sign-In",
+        "The login button re-evaluates complex password creation rules (requiring uppercase, lowercase, numbers, and symbols) during sign-in. A login screen should only check whether credentials match the account, not re-validate creation rules on existing passwords.",
         "Req 3",
         "Auth / Architecture",
         "Medium",
@@ -424,6 +441,7 @@ bugs_data = [
     [
         "DEF-10",
         "Text Inputs Are Aligned to the Right with Confusing Arrow Icons",
+        "Text input fields on the registration screen force all typed text to be aligned to the right side, and each input row displays a right-arrow navigation icon. This misleads users into thinking the inputs are clickable menu items.",
         "Req 10 / Task 3",
         "Usability / UI",
         "Low",
@@ -442,6 +460,7 @@ bugs_data = [
     [
         "DEF-12",
         "Logout Button Cut Off at Screen Edge in Landscape Mode on Profile Screen",
+        "On the profile screen in landscape orientation, labels and user details are pushed to extreme opposite edges of the screen, and the Logout button gets cut off at the bottom with no way for the user to scroll down to click it.",
         "Req 4 & 12",
         "Usability / UI",
         "Medium",
@@ -460,6 +479,7 @@ bugs_data = [
     [
         "DEF-13",
         "Empty Group Screen Has Too Much Blank Space and Unnecessary Scrolling",
+        "When a user has no joined groups, viewing the empty state in landscape mode shows unnecessary scrollbars and vertical dragging because a fixed 200px top padding pushes the empty state icon past the bottom of the screen.",
         "Req 10 & 12",
         "UI Polish",
         "Low",
@@ -486,11 +506,11 @@ for bug in bugs_data_with_no:
         cell.alignment = Alignment(vertical="top", wrap_text=True)
         
         # Center align short columns (No, Defect ID, Req, Category, Severity, Priority, Status)
-        if c_idx in [1, 2, 4, 5, 6, 7, 8]:
+        if c_idx in [1, 2, 5, 6, 7, 8, 9]:
             cell.alignment = Alignment(horizontal="center", vertical="top")
         
         # Severity coloring
-        if c_idx == 6:
+        if c_idx == 7:
             if val in ["Critical", "Blocker"]:
                 cell.fill = CRITICAL_FILL
                 cell.font = CRITICAL_FONT
@@ -508,18 +528,19 @@ bug_col_widths = {
     1: 6,   # No.
     2: 14,  # Defect ID
     3: 32,  # Title
-    4: 12,  # Req
-    5: 18,  # Category
-    6: 14,  # Severity
-    7: 10,  # Priority
-    8: 12,  # Status
-    9: 22,  # Environment
-    10: 35, # Steps
-    11: 30, # Expected
-    12: 35, # Actual
-    13: 45, # Evidence
-    14: 35, # Root Cause
-    15: 40  # Fix
+    4: 42,  # Description
+    5: 12,  # Req
+    6: 18,  # Category
+    7: 14,  # Severity
+    8: 10,  # Priority
+    9: 12,  # Status
+    10: 22, # Environment
+    11: 35, # Steps
+    12: 30, # Expected
+    13: 35, # Actual
+    14: 45, # Evidence
+    15: 35, # Root Cause
+    16: 40  # Fix
 }
 
 for col_idx, width in bug_col_widths.items():
