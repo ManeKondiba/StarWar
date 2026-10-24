@@ -330,6 +330,61 @@ To rigorously assess the quality, functional completeness, platform compatibilit
   <TextInput style={styles.input} maxLength={50} ... />
   ```
 
+### DEF-10: Inconsistent Text Alignment & Misleading Chevron Icons in Form
+- **Severity:** Low | **Category:** Usability & Form Design (Heuristic #4: Consistency & Standards)
+- **Steps to Reproduce:** Open Register Screen and observe input rows for First Name, Last Name, Email, Password.
+- **Expected Result:** Inputs should follow standard left-aligned form conventions (`textAlign: 'left'`). Chevron arrows (`>`) should only indicate sub-page navigation (e.g. User Role).
+- **Actual Result:** Inputs use `textAlign: 'right'` with label on the far left. Every text field has a misleading `chevron-forward` (`>`) icon, confusing users into thinking tapping opens another screen and causing cursor jumping.
+- **Developer Remedy:** Remove chevron icons from plain text fields and set `textAlign: 'left'`.
+
+### DEF-11: Unconstrained Image Capture Size & Uncompressed Base64 Bloat
+- **Severity:** High | **Category:** Performance, Memory Management & Resource Consumption
+- **Steps to Reproduce:** Take a photo during registration on a high-resolution phone (e.g. 48MP+).
+- **Expected Result:** Image is cropped to avatar dimensions (e.g. 300x300), compressed to JPEG ($\le 200\text{ KB}$), and stored as a file URI.
+- **Actual Result:** App takes unconstrained snapshots, converts the entire binary into a giant Base64 string, and saves it into MMKV and React state. In groups with multiple members, rendering raw Base64 photos causes massive memory spikes, bridge lag, and Out-Of-Memory (OOM) crashes.
+- **Developer Remedy:** Implement image cropping, resize avatars to $300\times 300$, compress to $<150\text{ KB}$, and store file paths (`file://...`) in MMKV instead of raw Base64.
+
+### DEF-12: Split-Column Edge Alignment & Trapped Logout Button in Landscape
+- **Severity:** Medium | **Category:** Usability, Responsive Design (Requirement 12)
+- **Steps to Reproduce:**
+  1. Open Profile Screen.
+  2. Rotate device to Landscape orientation.
+  3. Attempt to log out.
+- **Expected Result:** Details should align cleanly without giant whitespace gaps. Screen should scroll smoothly, allowing the user to reach the Logout button.
+- **Actual Result:** `profileDetail` uses `justifyContent: 'space-between'` with no flex limits, pushing particulars to the far edges. In landscape mode, because ProfileScreen has no `<ScrollView>`, the Logout button is pushed completely off-screen and is unreachable.
+- **Developer Remedy:** Wrap ProfileScreen in `<ScrollView>`, add `flexShrink: 1` to text values, and left-align details with consistent column spacing.
+
+### DEF-13: Phantom Scrolling on Empty Group State in Landscape
+- **Severity:** Low | **Category:** Layout & Visual Polish
+- **Steps to Reproduce:** Navigate to Group Home Screen with zero unjoined groups; rotate device to Landscape; swipe vertically.
+- **Expected Result:** The empty state placeholder should be centered and stationary without requiring scrolling.
+- **Actual Result:** The empty placeholder scrolls vertically because `styles.emptyStateContainer` hardcodes `paddingTop: Metrics.SCREEN_WIDTH / 2` (~200px), pushing the 100px icon and text past the landscape viewport.
+- **Developer Remedy:** Use flex centering (`justifyContent: 'center'`) instead of static `paddingTop: Metrics.SCREEN_WIDTH / 2`.
+
+### SEC-01: Plaintext Password Storage in Local MMKV (CWE-312 / OWASP M2)
+- **Severity:** Critical | **Category:** Security (Requirement 11)
+- **Finding:** In `RegisterScreen.js` and `Storages.js`, passwords are saved unhashed into `StorageKey.LIST_USER` and `CURR_USER_LOGIN_DATA`.
+- **Impact:** Any user or process with physical device access, backup access, or ADB access can read all account passwords in plain text.
+- **Remedy:** Hash passwords with `bcrypt` / PBKDF2 before saving, or store credentials in hardware-backed secure storage via `react-native-keychain`.
+
+### SEC-02: Hardcoded Production Google Maps API Key in Manifest (OWASP M1/M9)
+- **Severity:** High | **Category:** Security / Secret Management
+- **Finding:** `AndroidManifest.xml` line 54 exposes key `AIzaSyDwBmG2L0YadPd3JE-Wku5Bdd-vwk97mdA`.
+- **Impact:** Attackers decompiling the APK can extract this key, exceeding billing quotas and making unauthorized Google Cloud API requests.
+- **Remedy:** Move keys to `.env` build variables and add package name / SHA-1 fingerprint restrictions in Google Cloud Console.
+
+### SEC-03: Insecure TLS Configuration via NSAllowsArbitraryLoads (OWASP M3)
+- **Severity:** High | **Category:** Network Security
+- **Finding:** `ios/StarWarsApp/Info.plist` line 30 sets `<key>NSAllowsArbitraryLoads</key><true/>`.
+- **Impact:** Disables Apple Transport Security, allowing unencrypted HTTP traffic susceptible to Man-In-The-Middle (MITM) credential interception.
+- **Remedy:** Remove `NSAllowsArbitraryLoads = true` and enforce strict HTTPS.
+
+### SEC-04: Release APK Signed with Debug Keystore (OWASP M9)
+- **Severity:** High | **Category:** Build & Release Integrity
+- **Finding:** `android/app/build.gradle` line 103 configures `buildTypes.release` with `signingConfig signingConfigs.debug`.
+- **Impact:** The release APK is signed with public debug keys (`androiddebugkey` / password `android`), breaking release authenticity and APK tampering protection.
+- **Remedy:** Configure a secure production keystore with credentials injected securely via CI/CD secrets.
+
 ---
 
 ## 6. Recommendations & Technical Remedies
