@@ -250,6 +250,16 @@ test_cases_data = [
         "User is committed to MMKV before permission resolves; denial redirects to login; retrying registration locks email permanently",
         "FAIL", "High", "DEF-01"
     ],
+    [
+        "TC-REG-12", "Registration", "Req 1 / Task 3", "Usability / UI",
+        "Verify registration form text alignment and icon behavior",
+        "Register Screen opened",
+        "1. Enter text in First Name, Last Name, Email, and Password\n2. Observe text alignment and right-hand icons",
+        "Sample text input",
+        "Text is aligned to left (textAlign: 'left'); regular typing inputs do not have navigation chevron (>) icons",
+        "Inputs force textAlign: 'right' with label on far left, and every row displays a misleading '>' chevron arrow",
+        "FAIL", "Low", "DEF-10"
+    ],
 
     # 3. Boundary Value Analysis (BVA)
     [
@@ -644,7 +654,7 @@ test_cases_data = [
         "Tablet resolution (e.g. 1200x1920)",
         "Tab bar has proportional, standard height (56-64px)",
         "Tab bar height uses SCREEN_HEIGHT * 0.1, making it an excessive 120-140px tall",
-        "FAIL", "Medium", ""
+        "FAIL", "Medium", "DEF-07"
     ],
     [
         "TC-CMP-05", "Compatibility", "Req 12", "Compatibility",
@@ -654,7 +664,7 @@ test_cases_data = [
         "iOS platform",
         "Triggers native iOS CoreLocation permission prompt",
         "Code has `if (Platform.OS === 'android')` check and returns true blindly for iOS without requesting authorization",
-        "FAIL", "Medium", ""
+        "FAIL", "Medium", "DEF-04"
     ],
 
     # 11. Localization (Req 13)
@@ -728,7 +738,7 @@ test_cases_data = [
         "build.gradle",
         "Proguard / R8 obfuscation enabled in release builds to prevent reverse engineering",
         "enableProguardInReleaseBuilds is set to false; bytecode is completely unobfuscated",
-        "FAIL", "Medium", ""
+        "FAIL", "Medium", "SEC-04"
     ],
     [
         "TC-SEC-06", "Security", "Req 11", "Security / OWASP M1",
@@ -738,7 +748,7 @@ test_cases_data = [
         "Info.plist",
         "Permission description must exist to prevent iOS runtime crash on photo library access",
         "NSPhotoLibraryUsageDescription key is missing; opening gallery crashes iOS app",
-        "FAIL", "High", ""
+        "FAIL", "High", "DEF-02"
     ],
     [
         "TC-SEC-07", "Security", "Req 11", "Security / OWASP M3",
@@ -748,7 +758,7 @@ test_cases_data = [
         "apiCallers.js",
         "API endpoints must use secure HTTPS protocol",
         "API_HOST is hardcoded to unencrypted 'http://localhost:3000'",
-        "FAIL", "Medium", ""
+        "FAIL", "Medium", "SEC-03"
     ]
 ]
 
@@ -812,14 +822,19 @@ for col_idx, width in dash_widths.items():
 
 # Save Excel file
 excel_path = "C:/Users/HP/Desktop/StarWar/StarWars_QA_Test_Cases.xlsx"
-wb.save(excel_path)
-print("Excel generated successfully:", excel_path)
+try:
+    wb.save(excel_path)
+    print("Excel generated successfully:", excel_path)
+except PermissionError:
+    print("Notice: StarWars_QA_Test_Cases.xlsx is currently open in Excel. Please close it if you want to overwrite the file.")
 
 # Also generate CSV version
 csv_path = "C:/Users/HP/Desktop/StarWar/StarWars_QA_Test_Cases.csv"
-with open(csv_path, mode="w", newline="", encoding="utf-8-sig") as f:
-    writer = csv.writer(f)
-    writer.writerow(headers_cases)
-    writer.writerows(test_cases_data)
-
-print("CSV generated successfully:", csv_path)
+try:
+    with open(csv_path, mode="w", newline="", encoding="utf-8-sig") as f:
+        writer = csv.writer(f)
+        writer.writerow(headers_cases)
+        writer.writerows(test_cases_data)
+    print("CSV generated successfully:", csv_path)
+except PermissionError:
+    print("Notice: StarWars_QA_Test_Cases.csv is currently open in Excel. Please close it if you want to overwrite the CSV as well.")
