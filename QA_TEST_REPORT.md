@@ -385,9 +385,32 @@ To rigorously assess the quality, functional completeness, platform compatibilit
 - **Impact:** The release APK is signed with public debug keys (`androiddebugkey` / password `android`), breaking release authenticity and APK tampering protection.
 - **Remedy:** Configure a secure production keystore with credentials injected securely via CI/CD secrets.
 
----
+### DEF-14: Camera Permission False Negative Bug & Registration Showstopper
+- **Severity:** High / Blocker | **Category:** Functional, Hardware/Permissions & User Flow
+- **Steps to Reproduce:**
+  1. In Android device/emulator settings, grant Camera permission to `StarWarsApp`.
+  2. Launch app and tap "Create a new account".
+  3. Tap on the camera icon to capture a profile photo.
+- **Expected Result:** The live camera viewfinder should activate immediately, allowing the user to take a profile photo.
+- **Actual Result:** The screen displays: *"Camera permission is not granted"*, even when permission is already granted in system settings.
+- **Root Cause:**
+  1. In `RegisterScreen/index.js`, initial permission state is hardcoded to `false` (`useState(false)`). The app never checks existing permission status on mount (`Camera.getCameraPermissionStatus()`).
+  2. When switching to `currRegisterPage === 2`, React renders the fallback view (`"Camera permission is not granted"`) before the asynchronous `Camera.requestCameraPermission()` finishes.
+  3. On Android systems where permission was already granted, `requestCameraPermission()` does not trigger the OS dialog, causing a state desynchronization.
+  4. There is no retry button or link to App Settings, permanently blocking the user from taking a photo and completing registration.
+- **Developer Remedy:**
+  Check existing permission on component mount:
+  ```javascript
+  useEffect(() => {
+    const checkPerm = async () => {
+      const status = await Camera.getCameraPermissionStatus();
+      setIsCameraPermitted(status === 'granted');
+    };
+    checkPerm();
+  }, []);
+  ```
 
-## 6. Recommendations & Technical Remedies
+---
 
 ### 6.1 Security Hardening
 1. **Hash and Salt Passwords:**
