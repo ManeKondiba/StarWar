@@ -410,6 +410,29 @@ To rigorously assess the quality, functional completeness, platform compatibilit
   }, []);
   ```
 
+### DEF-15: Client-Side Password Complexity Enforcement on Login & Missing MaxLength
+- **Severity:** Medium / High | **Category:** Authentication Architecture, Input Validation & Security (CWE-400 / CWE-1286)
+- **Steps to Reproduce:**
+  1. Open Login Screen.
+  2. Enter valid registered email `luke_skywalker@starwars.com`.
+  3. In Password, enter a password without uppercase or symbols, or paste a 20,000+ character string.
+  4. Tap LOGIN.
+- **Expected Result:**
+  - Login fields should enforce maximum character lengths via `maxLength` (e.g., Email: 254, Password: 128).
+  - The login screen should NOT re-evaluate creation-time password complexity; it should only verify presence of the password and submit it to the authentication service.
+- **Actual Result:**
+  - `TextInput` fields on LoginScreen completely lack `maxLength` limitations.
+  - `handleLogin()` executes `if (!validatePassword(password))` at line 98, enforcing the full registration complexity regex (`/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/`).
+  - Running a complex regex against unbounded long text strings creates a severe risk of **Regular Expression Denial of Service (ReDoS)**, freezing the JavaScript thread on mobile devices.
+  - Rejecting passwords client-side leaks policy information and blocks any user whose password may have been grandfathered or migrated.
+- **Developer Remedy:**
+  1. Add `maxLength={254}` to Email input and `maxLength={128}` to Password input.
+  2. Remove `validatePassword` check from `LoginScreen.js#L98`:
+  ```javascript
+  // Remove this block from handleLogin():
+  // if (!validatePassword(password)) { ... }
+  ```
+
 ---
 
 ### 6.1 Security Hardening
