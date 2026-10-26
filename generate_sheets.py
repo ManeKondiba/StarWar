@@ -707,7 +707,7 @@ test_cases_data = [
         "1. Inspect AndroidManifest.xml inside APK",
         "AndroidManifest.xml",
         "Production API keys should not be hardcoded in plaintext manifest files",
-        "Production key AIzaSyDwBmG2L0YadPd3JE-Wku5Bdd-vwk97mdA is hardcoded and exposed",
+        "Production key AIzaSyDwBmG2L0YadPd3JE-Wku5Bdd-******** is hardcoded and exposed",
         "FAIL", "High", "SEC-02"
     ],
     [

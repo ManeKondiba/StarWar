@@ -63,7 +63,8 @@ function runSecurityAuditTests() {
     const manifest = fs.readFileSync(path.join(projectRoot, 'android/app/src/main/AndroidManifest.xml'), 'utf8');
     const apiKeyMatch = manifest.match(/android:name="com.google.android.geo.API_KEY"\s+android:value="([^"]+)"/);
     if (apiKeyMatch && apiKeyMatch[1]) {
-      return `Exposed production API key detected in AndroidManifest.xml: "${apiKeyMatch[1]}". Anyone decompiling the APK can extract and abuse this key.`;
+      const maskedKey = apiKeyMatch[1].substring(0, 24) + '********';
+      return `Exposed production API key detected in AndroidManifest.xml: "${maskedKey}". Anyone decompiling the APK can extract and abuse this key.`;
     }
     return null;
   });

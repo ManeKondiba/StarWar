@@ -263,7 +263,7 @@ To rigorously assess the quality, functional completeness, platform compatibilit
 | **M2: Insecure Data Storage** | Plaintext Credentials in MMKV | **CRITICAL** | Passwords stored in plain text in MMKV (`LIST_USER` and `CURR_USER_LOGIN_DATA`). Any physical access, backup extraction, or rooted device attack immediately exposes all user passwords. |
 | **M3: Insecure Communication** | Cleartext HTTP Endpoint | **MEDIUM** | `apiCallers.js` defaults to `http://localhost:3000` (unencrypted HTTP) rather than HTTPS. |
 | **M4: Insecure Authentication** | Client-Side Mock Authentication | **HIGH** | Authentication occurs purely inside the client app by matching plain strings in MMKV. There is no session token, JWT, or cryptographic challenge. |
-| **M9: Reverse Engineering** | Hardcoded API Key in Manifest | **HIGH** | `AndroidManifest.xml` line 54 contains an exposed Google Maps API key: `AIzaSyDwBmG2L0YadPd3JE-Wku5Bdd-vwk97mdA`. Attackers can extract this key to incur financial billing charges. |
+| **M9: Reverse Engineering** | Hardcoded API Key in Manifest | **HIGH** | `AndroidManifest.xml` line 54 contains an exposed Google Maps API key: `AIzaSyDwBmG2L0YadPd3JE-Wku5Bdd-********`. Attackers can extract this key to incur financial billing charges. |
 | **M9: Reverse Engineering** | Release APK Signed with Debug Key | **HIGH** | `android/app/build.gradle` lines 101-104 configures `buildTypes.release` to use `signingConfigs.debug`. Allows spoofing and invalidates release authenticity. |
 | **M9: Reverse Engineering** | Proguard / Obfuscation Disabled | **MEDIUM** | `enableProguardInReleaseBuilds = false` in `build.gradle`. Allows complete decompilation of Java/Kotlin bytecode via JADX. |
 
@@ -377,7 +377,7 @@ To rigorously assess the quality, functional completeness, platform compatibilit
 
 ### SEC-02: Hardcoded Production Google Maps API Key in Manifest (OWASP M1/M9)
 - **Severity:** High | **Category:** Security / Secret Management
-- **Finding:** `AndroidManifest.xml` line 54 exposes key `AIzaSyDwBmG2L0YadPd3JE-Wku5Bdd-vwk97mdA`.
+- **Finding:** `AndroidManifest.xml` line 54 exposes key `AIzaSyDwBmG2L0YadPd3JE-Wku5Bdd-********`.
 - **Impact:** Attackers decompiling the APK can extract this key, exceeding billing quotas and making unauthorized Google Cloud API requests.
 - **Remedy:** Move keys to `.env` build variables and add package name / SHA-1 fingerprint restrictions in Google Cloud Console.
 

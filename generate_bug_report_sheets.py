@@ -298,8 +298,8 @@ bugs_data = [
         "Android",
         "1. Open the Android project configuration file (AndroidManifest.xml)\n2. Search for 'com.google.android.geo.API_KEY'",
         "Secret API keys should be hidden inside secure environment files (.env) and protected by Google Cloud restrictions.",
-        "The live production Google Maps API key is written directly in the open code: AIzaSyDwBmG2L0YadPd3JE-Wku5Bdd-vwk97mdA.",
-        "CODE PROOF:\nIn AndroidManifest.xml line 54:\n<meta-data android:name=\"com.google.android.geo.API_KEY\" android:value=\"AIzaSyDwBmG2L0YadPd3JE-Wku5Bdd-vwk97mdA\"/>",
+        "The live production Google Maps API key is written directly in the open code: AIzaSyDwBmG2L0YadPd3JE-Wku5Bdd-********.",
+        "CODE PROOF:\nIn AndroidManifest.xml line 54:\n<meta-data android:name=\"com.google.android.geo.API_KEY\" android:value=\"AIzaSyDwBmG2L0YadPd3JE-Wku5Bdd-********\"/>",
         "The developer pasted the production API key directly into the public manifest file instead of using secure environment variables.",
         "Move the API key into a .env file and add app package and fingerprint restrictions in Google Cloud Console."
     ],
