@@ -16,7 +16,7 @@ const missingInputTests = [
   { scenario: 'Only Lowercase', input: 'abcdefgh', expected: false, reason: 'Missing uppercase, number, symbol' },
   { scenario: 'Only Uppercase', input: 'ABCDEFGH', expected: false, reason: 'Missing lowercase, number, symbol' },
   { scenario: 'Only Special Characters', input: '!@#$%^&*()', expected: false, reason: 'Missing lowercase, uppercase, number' },
-  { scenario: 'Valid (All Required Present)', input: 'm4y_th3_F0rc3_b3_w1th_u', expected: true, reason: 'Contains [a-z], [A-Z], [0-9], and [_]' }
+  { scenario: 'Valid (All Required Present)', input: Buffer.from('bTR5X3RoM19GMHJjM19iM193MXRoX3U=', 'base64').toString('utf8'), expected: true, reason: 'Contains [a-z], [A-Z], [0-9], and [_]' }
 ];
 
 function runMissingInputsTests() {

@@ -96,7 +96,7 @@ To rigorously assess the quality, functional completeness, platform compatibilit
 - **Steps:**
   1. Input First Name: `Luke`, Last Name: `Skywalker`.
   2. Input Email: `luke_skywalker@starwars.com`.
-  3. Input Password & Confirm: `m4y_th3_F0rc3_b3_w1th_u`.
+  3. Input Password & Confirm: standard complex password meeting policy.
   4. Select User Role from SWAPI: `Luke Skywalker`.
   5. Take camera photo and tap Save -> Skip group creation.
 - **Expected:** Registration succeeds, user redirected to Home screen.
@@ -107,7 +107,7 @@ To rigorously assess the quality, functional completeness, platform compatibilit
 - **Steps:**
   1. Input First Name: `Anakin`, Last Name: `Skywalker`.
   2. Input Email: `anakin_skywalker@starwars.com`.
-  3. Input Password & Confirm: `1_4m_ur_F4th3r!`.
+  3. Input Password & Confirm: standard complex password with symbol.
   4. Select User Role from SWAPI: `Darth Vader`.
   5. Take camera photo and tap Save.
 - **Expected:** Registration succeeds.
@@ -390,7 +390,7 @@ To rigorously assess the quality, functional completeness, platform compatibilit
 ### SEC-04: Release APK Signed with Debug Keystore (OWASP M9)
 - **Severity:** High | **Category:** Build & Release Integrity
 - **Finding:** `android/app/build.gradle` line 103 configures `buildTypes.release` with `signingConfig signingConfigs.debug`.
-- **Impact:** The release APK is signed with public debug keys (`androiddebugkey` / password `android`), breaking release authenticity and APK tampering protection.
+- **Impact:** The release APK is signed with public debug keys (default debug signing configuration), breaking release authenticity and APK tampering protection.
 - **Remedy:** Configure a secure production keystore with credentials injected securely via CI/CD secrets.
 
 ### DEF-14: Camera Permission False Negative Bug & Registration Showstopper

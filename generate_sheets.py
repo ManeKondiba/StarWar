@@ -144,7 +144,7 @@ test_cases_data = [
         "Verify successful user registration using Luke Skywalker credentials",
         "Fresh app launch on Register Screen",
         "1. Enter First Name, Last Name\n2. Enter Email & Password\n3. Select SWAPI role 'Luke Skywalker'\n4. Capture camera photo\n5. Tap Save -> Skip group creation",
-        "First: Luke, Last: Skywalker\nEmail: luke_skywalker@starwars.com\nPwd: m4y_th3_F0rc3_b3_w1th_u",
+        "First: Luke, Last: Skywalker\nEmail: luke_skywalker@starwars.com\nPwd: [Assignment Password Standard]",
         "Registration succeeds with success toast; user navigated to Home screen; user saved in storage",
         "User registered successfully; credentials saved in MMKV",
         "PASS", "High", ""
@@ -154,7 +154,7 @@ test_cases_data = [
         "Verify successful user registration using Darth Vader credentials",
         "Register Screen opened",
         "1. Enter First Name, Last Name\n2. Enter Email & Password\n3. Select SWAPI role 'Darth Vader'\n4. Capture photo\n5. Tap Save",
-        "First: Anakin, Last: Skywalker\nEmail: anakin_skywalker@starwars.com\nPwd: 1_4m_ur_F4th3r!",
+        "First: Anakin, Last: Skywalker\nEmail: anakin_skywalker@starwars.com\nPwd: [Assignment Password Standard]",
         "Registration succeeds; complexity regex accepts special character '!' and uppercase 'F'",
         "User registered successfully",
         "PASS", "High", ""
@@ -175,7 +175,7 @@ test_cases_data = [
         "Verify registration rejection when Password and Confirm Password do not match",
         "Register Screen opened",
         "1. Fill valid names and email\n2. Enter Password\n3. Enter different Confirm Password\n4. Tap Save",
-        "Password: m4y_th3_F0rc3_b3_w1th_u\nConfirm: m4y_th3_F0rc3_b3_w1th_x",
+        "Password: [Valid Assignment Password]\nConfirm: [Mismatched Confirmation Password]",
         "Registration blocked; error toast: 'Passwords do not match'",
         "Error toast displayed: 'Passwords do not match'",
         "PASS", "Medium", ""
@@ -185,7 +185,7 @@ test_cases_data = [
         "Verify password rejection when uppercase letter is missing",
         "Register Screen opened",
         "1. Fill valid form\n2. Enter password with only lowercase, numbers, and symbols\n3. Tap Save",
-        "Password: m4y_th3_f0rc3_b3_w1th_u (all lowercase 'f')",
+        "Password: [Sample with all lowercase 'f' - missing uppercase]",
         "Registration rejected; toast displays password complexity policy requirement",
         "Rejected by regex validation",
         "PASS", "Medium", ""
@@ -390,7 +390,7 @@ test_cases_data = [
         "TC-LOG-01", "Login", "Req 3", "Positive",
         "Verify successful login with registered Luke Skywalker credentials",
         "User registered; Login Screen opened; GPS enabled",
-        "1. Enter email: luke_skywalker@starwars.com\n2. Enter password: m4y_th3_F0rc3_b3_w1th_u\n3. Tap LOGIN",
+        "1. Enter email: luke_skywalker@starwars.com\n2. Enter registered password\n3. Tap LOGIN",
         "Luke credentials",
         "Toast displays 'Login Success'; user navigated to BottomTabBar",
         "Login succeeds; user logged in",
@@ -400,7 +400,7 @@ test_cases_data = [
         "TC-LOG-02", "Login", "Req 3", "Positive",
         "Verify successful login with registered Darth Vader credentials",
         "User registered; Login Screen opened; GPS enabled",
-        "1. Enter email: anakin_skywalker@starwars.com\n2. Enter password: 1_4m_ur_F4th3r!\n3. Tap LOGIN",
+        "1. Enter email: anakin_skywalker@starwars.com\n2. Enter registered password\n3. Tap LOGIN",
         "Vader credentials",
         "Login succeeds; user navigated to BottomTabBar",
         "Login succeeds",
@@ -697,7 +697,7 @@ test_cases_data = [
         "1. Inspect /data/data/com.starwarsapp/files/mmkv/mmkv.default",
         "MMKV storage file",
         "Passwords must be hashed with bcrypt/Argon2 or stored in Android KeyStore",
-        "Password stored in 100% clear text: 'password':'m4y_th3_F0rc3_b3_w1th_u'",
+        "Password stored in 100% clear text without encryption or hashing in MMKV storage",
         "FAIL", "Critical", "SEC-01"
     ],
     [
@@ -727,7 +727,7 @@ test_cases_data = [
         "1. Inspect buildTypes.release signing configuration",
         "build.gradle",
         "Release build must be signed with a secure, private production keystore",
-        "buildTypes.release is configured to sign with debug.keystore (androiddebugkey / android)",
+        "buildTypes.release is configured to sign with debug.keystore (insecure default debug key)",
         "FAIL", "High", "SEC-04"
     ],
     [

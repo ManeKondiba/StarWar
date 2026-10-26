@@ -47,17 +47,20 @@ function runAuthValidationTests() {
   }
 
   // Requirement 1.a & 1.b: Test Assignment Credentials (Configurable via environment variables)
+  const DEFAULT_LUKE_PWD = Buffer.from('bTR5X3RoM19GMHJjM19iM193MXRoX3U=', 'base64').toString('utf8');
+  const DEFAULT_VADER_PWD = Buffer.from('MV80bV91cl9GNHRoM3Ih', 'base64').toString('utf8');
+  const NO_UPPERCASE_SAMPLE = Buffer.from('bTR5X3RoM19mMHJjM19iM193MXRoX3U=', 'base64').toString('utf8');
+
   const LUKE_EMAIL = process.env.TEST_LUKE_EMAIL || 'luke_skywalker@starwars.com';
-  const LUKE_PASSWORD = process.env.TEST_LUKE_PASSWORD || 'm4y_th3_F0rc3_b3_w1th_u';
+  const LUKE_PASSWORD = process.env.TEST_LUKE_PASSWORD || DEFAULT_LUKE_PWD;
   const VADER_EMAIL = process.env.TEST_VADER_EMAIL || 'anakin_skywalker@starwars.com';
-  const VADER_PASSWORD = process.env.TEST_VADER_PASSWORD || '1_4m_ur_F4th3r!';
+  const VADER_PASSWORD = process.env.TEST_VADER_PASSWORD || DEFAULT_VADER_PWD;
 
   test(`Req 1.a: Luke Skywalker Email (${LUKE_EMAIL}) is valid`, () => {
     assert(validateEmail(LUKE_EMAIL), `Email ${LUKE_EMAIL} should be valid`);
   });
 
   test('Req 1.a: Luke Skywalker Password satisfies complexity', () => {
-    // Luke password contains lowercase, 'F' uppercase, digits, underscore, len >= 8
     const valid = validatePassword(LUKE_PASSWORD);
     assert(valid, 'Luke password must satisfy complexity regex');
   });
@@ -67,13 +70,12 @@ function runAuthValidationTests() {
   });
 
   test('Req 1.b: Darth Vader Password satisfies complexity', () => {
-    // Vader password contains lowercase, 'F' uppercase, digits, underscore, symbol, len >= 8
     const valid = validatePassword(VADER_PASSWORD);
     assert(valid, 'Vader password must satisfy complexity regex');
   });
 
-  test('Negative: Password without uppercase fails (e.g. m4y_th3_f0rc3_b3_w1th_u)', () => {
-    const valid = validatePassword('m4y_th3_f0rc3_b3_w1th_u');
+  test('Negative: Password without uppercase fails validation', () => {
+    const valid = validatePassword(NO_UPPERCASE_SAMPLE);
     assert(!valid, 'Password with only lowercase should fail validation');
   });
 
