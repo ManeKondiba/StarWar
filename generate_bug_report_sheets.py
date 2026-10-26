@@ -144,10 +144,10 @@ bugs_data = [
         "P1",
         "Open",
         "Android (API 26-37) & iOS",
-        "1. Register a new user (e.g. luke_skywalker@starwars.com)\n2. Open Android Studio -> Device File Explorer\n3. Go to /data/data/com.starwarsapp/files/mmkv/mmkv.default\n4. Open the file in a text editor",
+        "1. Register a new user with standard account credentials\n2. Open Android Studio -> Device File Explorer\n3. Go to /data/data/com.starwarsapp/files/mmkv/mmkv.default\n4. Open the file in a text editor",
         "Passwords should be securely encrypted (hashed with bcrypt or stored in Android Keystore / iOS Keychain) so no one can read them.",
         "The password is saved in 100% readable plain text directly in the phone's storage.",
-        "LIVE STORAGE PROOF:\nInside 'mmkv.default' file:\nCURR_USER_LOGIN_DATA: { email: 'luke_skywalker@starwars.com', password: '[RAW_PLAINTEXT_PASSWORD]' }\nAnyone with USB debugging can view everyone's password in plain text.",
+        "LIVE STORAGE PROOF:\nInside 'mmkv.default' file:\nCURR_USER_LOGIN_DATA: { email: '[REGISTERED_USER_EMAIL]', password: '[RAW_PLAINTEXT_PASSWORD]' }\nAnyone with USB debugging can view everyone's password in plain text.",
         "The registration code directly writes the user's password string into MMKV without hashing or encrypting it first.",
         "Use 'react-native-keychain' for secure hardware storage, or hash the password using bcrypt before saving it."
     ],

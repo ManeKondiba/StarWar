@@ -144,7 +144,7 @@ test_cases_data = [
         "Verify successful user registration using Luke Skywalker credentials",
         "Fresh app launch on Register Screen",
         "1. Enter First Name, Last Name\n2. Enter Email & Password\n3. Select SWAPI role 'Luke Skywalker'\n4. Capture camera photo\n5. Tap Save -> Skip group creation",
-        "First: Luke, Last: Skywalker\nEmail: luke_skywalker@starwars.com\nPwd: [Assignment Password Standard]",
+        "First: Luke, Last: Skywalker\nEmail: [User1_Email]\nPwd: [Assignment Password Standard]",
         "Registration succeeds with success toast; user navigated to Home screen; user saved in storage",
         "User registered successfully; credentials saved in MMKV",
         "PASS", "High", ""
@@ -154,7 +154,7 @@ test_cases_data = [
         "Verify successful user registration using Darth Vader credentials",
         "Register Screen opened",
         "1. Enter First Name, Last Name\n2. Enter Email & Password\n3. Select SWAPI role 'Darth Vader'\n4. Capture photo\n5. Tap Save",
-        "First: Anakin, Last: Skywalker\nEmail: anakin_skywalker@starwars.com\nPwd: [Assignment Password Standard]",
+        "First: Anakin, Last: Skywalker\nEmail: [User2_Email]\nPwd: [Assignment Password Standard]",
         "Registration succeeds; complexity regex accepts special character '!' and uppercase 'F'",
         "User registered successfully",
         "PASS", "High", ""
@@ -233,9 +233,9 @@ test_cases_data = [
     [
         "TC-REG-10", "Registration", "Req 1", "Edge",
         "Verify duplicate email registration rejection",
-        "User luke_skywalker@starwars.com already registered",
+        "User [User1_Email] already registered",
         "1. Open Register Screen\n2. Attempt to register again with same email\n3. Tap Save",
-        "Email: luke_skywalker@starwars.com",
+        "Email: [User1_Email]",
         "Registration blocked; toast: 'Email is already registered'",
         "Toast displays: 'Email is already registered'",
         "PASS", "High", ""
@@ -327,7 +327,7 @@ test_cases_data = [
         "Verify email whitespace boundary handling (Leading & Trailing spaces)",
         "Register Screen opened",
         "1. Enter valid email with spaces at start and end\n2. Submit registration",
-        "Email: '  luke_skywalker@starwars.com  '",
+        "Email: '  user.sample@example.com  '",
         "Input should be sanitized with .trim() before validation",
         "Email trimmed properly in formData handling",
         "PASS", "Low", ""
@@ -390,18 +390,18 @@ test_cases_data = [
         "TC-LOG-01", "Login", "Req 3", "Positive",
         "Verify successful login with registered Luke Skywalker credentials",
         "User registered; Login Screen opened; GPS enabled",
-        "1. Enter email: luke_skywalker@starwars.com\n2. Enter registered password\n3. Tap LOGIN",
-        "Luke credentials",
+        "1. Enter email: [User1_Email]\n2. Enter registered password\n3. Tap LOGIN",
+        "User credentials",
         "Toast displays 'Login Success'; user navigated to BottomTabBar",
         "Login succeeds; user logged in",
         "PASS", "High", ""
     ],
     [
         "TC-LOG-02", "Login", "Req 3", "Positive",
-        "Verify successful login with registered Darth Vader credentials",
+        "Verify successful login with registered secondary credentials",
         "User registered; Login Screen opened; GPS enabled",
-        "1. Enter email: anakin_skywalker@starwars.com\n2. Enter registered password\n3. Tap LOGIN",
-        "Vader credentials",
+        "1. Enter email: [User2_Email]\n2. Enter registered password\n3. Tap LOGIN",
+        "User credentials",
         "Login succeeds; user navigated to BottomTabBar",
         "Login succeeds",
         "PASS", "High", ""
@@ -411,7 +411,7 @@ test_cases_data = [
         "Verify login rejection with incorrect password",
         "User registered; Login Screen opened",
         "1. Enter valid email\n2. Enter incorrect password\n3. Tap LOGIN",
-        "Email: luke_skywalker@starwars.com\nPwd: WrongPassword123!",
+        "Email: [User1_Email]\nPwd: [MismatchedPassword]",
         "Login rejected; toast: 'Invalid email or password'",
         "Login rejected; error toast shown",
         "PASS", "High", ""
@@ -421,7 +421,7 @@ test_cases_data = [
         "Verify login rejection with unregistered email",
         "Login Screen opened",
         "1. Enter non-existent email\n2. Enter password\n3. Tap LOGIN",
-        "Email: yoda_master@starwars.com\nPwd: M4st3r_Y0da!",
+        "Email: [UnregisteredEmail]\nPwd: [SamplePassword]",
         "Login rejected; toast: 'Invalid email or password'",
         "Login rejected; error toast shown",
         "PASS", "High", ""
@@ -440,7 +440,7 @@ test_cases_data = [
         "TC-LOG-06", "Login", "Req 3", "Edge",
         "Verify email case-insensitivity on Login",
         "User registered with lowercase email",
-        "1. Enter email in uppercase: LUKE_SKYWALKER@STARWARS.COM\n2. Enter valid password\n3. Tap LOGIN",
+        "1. Enter email in uppercase: [USER1_UPPERCASE_EMAIL]\n2. Enter valid password\n3. Tap LOGIN",
         "Uppercase email",
         "Login succeeds due to .toLowerCase() normalization",
         "Login succeeds",
@@ -494,8 +494,8 @@ test_cases_data = [
         "TC-GRP-01", "Group Creation", "Req 5.a", "Positive",
         "Verify Luke Skywalker creates group 'Rebel Alliance' and invites Darth Vader",
         "Logged in as Luke; Create Group tab selected",
-        "1. Enter Group Name: 'Rebel Alliance'\n2. Select starship 'X-wing'\n3. Invite anakin_skywalker@starwars.com\n4. Tap Save",
-        "Group: Rebel Alliance\nStarship: X-wing\nInvite: anakin_skywalker@starwars.com",
+        "1. Enter Group Name: 'Rebel Alliance'\n2. Select starship 'X-wing'\n3. Invite [User2_Email]\n4. Tap Save",
+        "Group: Rebel Alliance\nStarship: X-wing\nInvite: [User2_Email]",
         "Group saved in MMKV; invitation stored in Darth Vader's notifications",
         "Group created; invitation added to Vader's record",
         "PASS", "High", ""
@@ -504,8 +504,8 @@ test_cases_data = [
         "TC-GRP-02", "Group Creation", "Req 5.b", "Positive",
         "Verify Darth Vader creates group 'Empire' and invites Luke Skywalker",
         "Logged in as Darth Vader; Create Group tab selected",
-        "1. Enter Group Name: 'Empire'\n2. Select starship 'Star Destroyer'\n3. Invite luke_skywalker@starwars.com\n4. Tap Save",
-        "Group: Empire\nStarship: Star Destroyer\nInvite: luke_skywalker@starwars.com",
+        "1. Enter Group Name: 'Empire'\n2. Select starship 'Star Destroyer'\n3. Invite [User1_Email]\n4. Tap Save",
+        "Group: Empire\nStarship: Star Destroyer\nInvite: [User1_Email]",
         "Group created; invitation stored in Luke's notifications",
         "Group created; invitation stored successfully",
         "PASS", "High", ""
@@ -535,7 +535,7 @@ test_cases_data = [
         "Verify invitation rejection for non-registered email address",
         "Create Group Screen opened",
         "1. Tap Invite member\n2. Enter non-existent email\n3. Tap Invite",
-        "Email: nobody@starwars.com",
+        "Email: [Unregistered_Email]",
         "Invitation rejected; error toast: 'No users found in the system'",
         "Error toast displayed: 'No users found in the system'",
         "PASS", "Medium", ""

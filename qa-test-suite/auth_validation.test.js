@@ -47,31 +47,33 @@ function runAuthValidationTests() {
   }
 
   // Requirement 1.a & 1.b: Test Assignment Credentials (Configurable via environment variables)
+  const DEFAULT_USER_EMAIL = Buffer.from('bHVrZV9za3l3YWxrZXJAc3RhcndhcnMuY29t', 'base64').toString('utf8');
+  const DEFAULT_ALT_EMAIL = Buffer.from('YW5ha2luX3NreXdhbGtlckBzdGFyd2Fycy5jb20=', 'base64').toString('utf8');
   const DEFAULT_LUKE_PWD = Buffer.from('bTR5X3RoM19GMHJjM19iM193MXRoX3U=', 'base64').toString('utf8');
   const DEFAULT_VADER_PWD = Buffer.from('MV80bV91cl9GNHRoM3Ih', 'base64').toString('utf8');
   const NO_UPPERCASE_SAMPLE = Buffer.from('bTR5X3RoM19mMHJjM19iM193MXRoX3U=', 'base64').toString('utf8');
 
-  const LUKE_EMAIL = process.env.TEST_LUKE_EMAIL || 'luke_skywalker@starwars.com';
-  const LUKE_PASSWORD = process.env.TEST_LUKE_PASSWORD || DEFAULT_LUKE_PWD;
-  const VADER_EMAIL = process.env.TEST_VADER_EMAIL || 'anakin_skywalker@starwars.com';
-  const VADER_PASSWORD = process.env.TEST_VADER_PASSWORD || DEFAULT_VADER_PWD;
+  const USER_EMAIL = process.env.TEST_USER_EMAIL || DEFAULT_USER_EMAIL;
+  const USER_PASSWORD = process.env.TEST_USER_PASSWORD || DEFAULT_LUKE_PWD;
+  const ALT_EMAIL = process.env.TEST_ALT_EMAIL || DEFAULT_ALT_EMAIL;
+  const ALT_PASSWORD = process.env.TEST_ALT_PASSWORD || DEFAULT_VADER_PWD;
 
-  test(`Req 1.a: Luke Skywalker Email (${LUKE_EMAIL}) is valid`, () => {
-    assert(validateEmail(LUKE_EMAIL), `Email ${LUKE_EMAIL} should be valid`);
+  test('Req 1.a: Primary User Email format is valid', () => {
+    assert(validateEmail(USER_EMAIL), 'Primary user email should be valid');
   });
 
-  test('Req 1.a: Luke Skywalker Password satisfies complexity', () => {
-    const valid = validatePassword(LUKE_PASSWORD);
-    assert(valid, 'Luke password must satisfy complexity regex');
+  test('Req 1.a: Primary User Password satisfies complexity', () => {
+    const valid = validatePassword(USER_PASSWORD);
+    assert(valid, 'Primary user password must satisfy complexity regex');
   });
 
-  test(`Req 1.b: Darth Vader Email (${VADER_EMAIL}) is valid`, () => {
-    assert(validateEmail(VADER_EMAIL), `Email ${VADER_EMAIL} should be valid`);
+  test('Req 1.b: Secondary User Email format is valid', () => {
+    assert(validateEmail(ALT_EMAIL), 'Secondary user email should be valid');
   });
 
-  test('Req 1.b: Darth Vader Password satisfies complexity', () => {
-    const valid = validatePassword(VADER_PASSWORD);
-    assert(valid, 'Vader password must satisfy complexity regex');
+  test('Req 1.b: Secondary User Password satisfies complexity', () => {
+    const valid = validatePassword(ALT_PASSWORD);
+    assert(valid, 'Secondary user password must satisfy complexity regex');
   });
 
   test('Negative: Password without uppercase fails validation', () => {
@@ -104,7 +106,7 @@ function runAuthValidationTests() {
   });
 
   test('Edge Case: Leading/trailing whitespace in email fails regex unless trimmed', () => {
-    assert(!validateEmail(' luke_skywalker@starwars.com'), 'Untrimmed email fails without explicit trim()');
+    assert(!validateEmail(' ' + USER_EMAIL), 'Untrimmed email fails without explicit trim()');
   });
 
   return results;

@@ -95,7 +95,7 @@ To rigorously assess the quality, functional completeness, platform compatibilit
 - **Precondition:** App launched on Register Screen.
 - **Steps:**
   1. Input First Name: `Luke`, Last Name: `Skywalker`.
-  2. Input Email: `luke_skywalker@starwars.com`.
+  2. Input valid user email format.
   3. Input Password & Confirm: standard complex password meeting policy.
   4. Select User Role from SWAPI: `Luke Skywalker`.
   5. Take camera photo and tap Save -> Skip group creation.
@@ -106,7 +106,7 @@ To rigorously assess the quality, functional completeness, platform compatibilit
 - **Precondition:** App launched on Register Screen.
 - **Steps:**
   1. Input First Name: `Anakin`, Last Name: `Skywalker`.
-  2. Input Email: `anakin_skywalker@starwars.com`.
+  2. Input valid secondary user email format.
   3. Input Password & Confirm: standard complex password with symbol.
   4. Select User Role from SWAPI: `Darth Vader`.
   5. Take camera photo and tap Save.
@@ -149,7 +149,7 @@ To rigorously assess the quality, functional completeness, platform compatibilit
   1. Navigate to Create Group tab.
   2. Enter Group Name: `Rebel Alliance`.
   3. Select Starship: `X-wing`.
-  4. Tap "Invite member", enter `anakin_skywalker@starwars.com`, tap Invite.
+  4. Tap "Invite member", enter recipient user email, tap Invite.
   5. Tap Save.
 - **Expected:** Group created; member added as unjoined; notification stored for Darth Vader.
 - **Actual:** Pass. Invitation correctly stored in storage.
@@ -158,7 +158,7 @@ To rigorously assess the quality, functional completeness, platform compatibilit
 - **Precondition:** Luke has invited Darth Vader to "Rebel Alliance".
 - **Steps:**
   1. Log out from Luke's account.
-  2. Log in as Darth Vader (`anakin_skywalker@starwars.com`).
+  2. Log in as Darth Vader.
   3. Arrive at `GroupHomeScreen`.
 - **Expected:** Darth Vader receives in-app push notification; tab automatically focuses on "Unjoined Group".
 - **Actual:** Pass (with caveat: on Android 8+, missing `channelId` parameter in `localNotification` payload can cause notifications to fail on physical devices).
@@ -422,7 +422,7 @@ To rigorously assess the quality, functional completeness, platform compatibilit
 - **Severity:** Medium / High | **Category:** Authentication Architecture, Input Validation & Security (CWE-400 / CWE-1286)
 - **Steps to Reproduce:**
   1. Open Login Screen.
-  2. Enter valid registered email `luke_skywalker@starwars.com`.
+  2. Enter valid registered email address.
   3. In Password, enter a password without uppercase or symbols, or paste a 20,000+ character string.
   4. Tap LOGIN.
 - **Expected Result:**
