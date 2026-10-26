@@ -11,13 +11,13 @@ Comprehensive Quality Assurance evaluation of the **StarWars Mobile Application*
 
 ## 📋 Executive Overview & Deliverables
 
-| Deliverable | Format | Description |
-| :--- | :--- | :--- |
-| **[QA Test Report](QA_TEST_REPORT.md)** | Markdown (`.md`) | Full technical audit report covering Test Strategy, RTM, Usability Heuristics, Resource Performance Profiling, OWASP Security Audit, Usability Study Plan, and Regression Strategy. |
-| **`StarWars_QA_Test_Cases.xlsx`** | Excel (`.xlsx`) | 60 manual and automated test cases covering Functional, Boundary, Compatibility, and Security domains with 100% RTM traceability. |
-| **`StarWars_QA_Bug_Report.xlsx`** | Excel (`.xlsx`) | 19 unique defects (15 Functional/UX/Performance + 4 Security Vulnerabilities) with severity, reproduction steps, code evidence, and developer fixes. |
-| **`qa-test-suite/`** | Node.js | Automated test suite verifying validation logic, negative input boundaries, i18n translation parity, and OWASP security configurations. |
-| **`audit_traceability.py`** | Python | Zero-dependency verification engine guaranteeing 100% bidirectional traceability between test cases and defects. |
+| Deliverable | In-Browser View | Raw Excel Workbook | Description |
+| :--- | :---: | :---: | :--- |
+| **QA Test Report** | **[📖 QA_TEST_REPORT.md](QA_TEST_REPORT.md)** | — | Complete technical audit report: Strategy, RTM, Usability Heuristics, Resource Performance Profiling, OWASP Security Audit, Usability Study Plan, and Regression Strategy. |
+| **QA Test Cases (60 Scenarios)** | **[🔍 View Online (TEST_CASES.md)](TEST_CASES.md)** | **[📥 Download .xlsx](StarWars_QA_Test_Cases.xlsx?raw=true)** | 60 test cases covering Functional, Boundary, Compatibility, and Security domains with 100% RTM traceability. |
+| **QA Defect Report (19 Bugs)** | **[🐞 View Online (BUG_REPORT.md)](BUG_REPORT.md)** | **[📥 Download .xlsx](StarWars_QA_Bug_Report.xlsx?raw=true)** | 19 unique defects (15 Functional/UX/Performance + 4 Security Vulnerabilities) with severity, reproduction steps, code evidence, and developer fixes. |
+| **Automated QA Suite** | **[`qa-test-suite/`](qa-test-suite/)** | — | Lightweight Node.js test harness verifying validation logic, negative input boundaries, i18n translation parity, and OWASP security configurations. |
+| **Traceability Audit Engine** | **[`audit_traceability.py`](audit_traceability.py)** | — | Zero-dependency verification engine guaranteeing 100% bidirectional traceability between test cases and defects. |
 
 ---
 
