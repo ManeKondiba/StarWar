@@ -327,7 +327,7 @@ test_cases_data = [
         "Verify email whitespace boundary handling (Leading & Trailing spaces)",
         "Register Screen opened",
         "1. Enter valid email with spaces at start and end\n2. Submit registration",
-        "Email: '  user.sample@example.com  '",
+        "Email: '  [Sample_Email_With_Spaces]  '",
         "Input should be sanitized with .trim() before validation",
         "Email trimmed properly in formData handling",
         "PASS", "Low", ""
