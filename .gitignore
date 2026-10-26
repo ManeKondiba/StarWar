@@ -20,3 +20,6 @@ StarWarsApp-main/
 Thumbs.db
 __pycache__/
 *.pyc
+
+# Personal Study Guides
+DEMONSTRATION_AND_INTERVIEW_GUIDE.md
