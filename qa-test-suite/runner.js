@@ -4,6 +4,7 @@
  */
 
 const { runAuthValidationTests } = require('./auth_validation.test');
+const { runMissingInputsTests } = require('./missing_inputs_test');
 const { runI18nParityTests } = require('./i18n_parity.test');
 const { runSecurityAuditTests } = require('./security_audit.test');
 const { runSwapiApiTests } = require('./swapi_api.test');
@@ -42,8 +43,22 @@ async function main() {
     }
   }
 
-  // 2. I18n Parity Tests
-  console.log(`\n${BOLD}2. I18n & L10n Translation Parity Tests (en.json vs id.json)${RESET}`);
+  // 2. Missing Inputs & Negative Boundary Matrix
+  console.log(`\n${BOLD}2. Negative Boundary & Missing Inputs Matrix Tests${RESET}`);
+  const inputResults = runMissingInputsTests();
+  for (const r of inputResults) {
+    totalTests++;
+    if (r.status === 'PASS') {
+      passedTests++;
+      console.log(`  ${GREEN}✔ PASS${RESET}  ${r.name}`);
+    } else {
+      failedTests++;
+      console.log(`  ${RED}✖ FAIL${RESET}  ${r.name} - ${GRAY}${r.error}${RESET}`);
+    }
+  }
+
+  // 3. I18n Parity Tests
+  console.log(`\n${BOLD}3. I18n & L10n Translation Parity Tests (en.json vs id.json)${RESET}`);
   const i18nResults = runI18nParityTests();
   for (const r of i18nResults) {
     totalTests++;
@@ -56,8 +71,8 @@ async function main() {
     }
   }
 
-  // 3. Security Audit Tests
-  console.log(`\n${BOLD}3. OWASP Mobile Top 10 Security & Config Audit${RESET}`);
+  // 4. Security Audit Tests
+  console.log(`\n${BOLD}4. OWASP Mobile Top 10 Security & Config Audit${RESET}`);
   const secResults = runSecurityAuditTests();
   for (const r of secResults) {
     if (r.status === 'VULNERABILITY_FOUND') {
@@ -72,8 +87,8 @@ async function main() {
     }
   }
 
-  // 4. SWAPI API Contract & Defect Detection Tests
-  console.log(`\n${BOLD}4. Star Wars API (SWAPI) Contract & Integration Tests${RESET}`);
+  // 5. SWAPI API Contract & Defect Detection Tests
+  console.log(`\n${BOLD}5. Star Wars API (SWAPI) Contract & Integration Tests${RESET}`);
   const swapiResults = await runSwapiApiTests();
   for (const r of swapiResults) {
     totalTests++;

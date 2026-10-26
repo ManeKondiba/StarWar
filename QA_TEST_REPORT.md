@@ -13,19 +13,27 @@
 This report documents the end-to-end Quality Assurance evaluation of the **StarWars Mobile Application** built with React Native. The application is intended to foster community engagement by enabling user registration, StarWars API character profile associations, group creation, member invitations, and group collaboration with starship specifications and member geolocation tracking.
 
 ### Summary of Findings
-- **Total Test Cases Executed:** 48 Test Cases (across 5 testing domains)
-- **Passed:** 29 (60.4%)
-- **Failed / Defective:** 14 (29.2%)
-- **Blocked / Partially Implemented:** 5 (10.4%)
-- **Identified Defects:** 12 Functional/UX Defects, 7 Security Vulnerabilities (including 1 Critical and 3 High), and 4 Major Performance Bottlenecks.
+- **Total Test Cases Executed:** 60 Test Cases (across 13 testing categories)
+- **Passed:** 34 (56.7%)
+- **Failed / Defective:** 26 (43.3%)
+- **Identified Defects:** 19 Unique Defects (15 Functional/UX/Performance Defects [DEF-01 to DEF-15] and 4 Mobile Security Vulnerabilities [SEC-01 to SEC-04]).
+- **Traceability:** 100% of failed test cases link directly to documented defects with zero orphaned or unmapped failures.
 
-| Testing Domain | Total Tests | Pass | Fail | Blocked | Key Risk / Health Status |
-| :--- | :---: | :---: | :---: | :---: | :--- |
-| **1. Functional Testing** | 22 | 14 | 5 | 3 | **High Risk**: Missing photo library upload, search query broken on static API, map view commented out. |
-| **2. Compatibility Testing** | 8 | 4 | 3 | 1 | **Moderate Risk**: Landscape mode broken due to static window metrics; iOS location permission handling defect. |
-| **3. Usability (UX) Testing** | 7 | 3 | 4 | 0 | **Moderate Risk**: Hostile mandatory GPS requirement on login; missing password visibility toggles. |
-| **4. Performance Testing** | 5 | 2 | 3 | 0 | **High Risk**: High memory bloat and UI jank due to uncompressed Base64 profile images stored in MMKV. |
-| **5. Security Testing** | 6 | 1 | 5 | 0 | **Critical Risk**: Cleartext passwords in MMKV storage, hardcoded Google API key, release APK signed with debug key. |
+| Testing Domain | Total Tests | Pass | Fail | Health & Quality Status |
+| :--- | :---: | :---: | :---: | :--- |
+| **1. Registration & Credentials (Req 1)** | 12 | 10 | 2 | **High Risk**: Denying GPS during sign-up permanently locks user email; text inputs misaligned. |
+| **2. Boundary Value Analysis (BVA)** | 8 | 6 | 2 | **Moderate Risk**: No input length limits (`maxLength`); app accepts 10,000+ characters causing UI lag. |
+| **3. Photo Upload & Vision Camera (Req 2)** | 4 | 1 | 3 | **Critical Blocker**: Photo gallery upload missing; camera false-negative permission bug; Base64 memory bloat. |
+| **4. Login & Authentication (Req 3)** | 7 | 5 | 2 | **High Risk**: Mandatory GPS blocks sign-in; unnecessary password regex re-validation on login. |
+| **5. Profile & SWAPI Particulars (Req 4)** | 3 | 2 | 1 | **Pass with UI Polish**: Particulars display accurately; wide column layout gaps in landscape. |
+| **6. Group Creation & Invitations (Req 5)** | 5 | 5 | 0 | **PASS**: Bidirectional invitations (Luke invites Vader & Vader invites Luke) succeed in storage. |
+| **7. In-App Notifications (Req 6)** | 1 | 1 | 0 | **PASS (Local)**: Unread notifications trigger local alerts and switch tab focus. |
+| **8. Group Joining & Invitation (Req 7)** | 2 | 1 | 1 | **High Risk**: "Join Group" button disappears when app language is set to Indonesian (`ID`). |
+| **9. Group Detail & GPS Map (Req 8)** | 2 | 1 | 1 | **High Risk**: `<MapView>` is commented out in code; only raw latitude/longitude strings rendered. |
+| **10. SWAPI Starship & Search (Req 9)** | 2 | 0 | 2 | **High Risk**: Static SWAPI mirror ignores `?search=Luke`, returning all 82 records without filtering. |
+| **11. Compatibility & Orientation (Req 12)** | 5 | 0 | 5 | **High Risk**: Frozen window metrics distort pie charts; landscape screens cannot scroll. |
+| **12. Localization / I18n Parity (Req 13)** | 2 | 2 | 0 | **PASS (Strings)**: 100% parity between `en.json` and `id.json` dictionaries. |
+| **13. Mobile Security & OWASP Audit (Req 11)** | 7 | 0 | 7 | **Critical Risk**: Plaintext passwords in MMKV, exposed Maps API key, release APK debug-signed. |
 
 ---
 
@@ -46,7 +54,7 @@ To rigorously assess the quality, functional completeness, platform compatibilit
 
 ### 2.3 Test Methodology & Rationale
 1. **Black-Box Manual & Exploratory Testing:** Validated core user journeys (registration, group creation, invitations, tab navigation, language switching) across varied network states and permission denial scenarios.
-2. **Automated Verification Suite:** Developed a lightweight Node.js test runner in `qa-test-suite/` to verify auth regexes, i18n translation key parity (`en.json` vs `id.json`), live SWAPI API schema contracts, and static configuration vulnerabilities.
+2. **Automated Verification Suite:** Developed a lightweight Node.js test runner in `qa-test-suite/` to verify auth regexes, negative boundary matrices, i18n translation key parity (`en.json` vs `id.json`), live SWAPI API schema contracts, and static configuration vulnerabilities.
 3. **Static Code Analysis (SAST):** Deep-dive review into `react-query`, `Storages.js`, `AndroidManifest.xml`, `Info.plist`, and `build.gradle` to identify architectural flaws that cannot be caught on the UI surface alone.
 
 ### 2.4 Test Environment & Tools
@@ -63,19 +71,19 @@ To rigorously assess the quality, functional completeness, platform compatibilit
 
 | Req ID | Requirement Description | Test Case IDs | Status | Core Observations |
 | :---: | :--- | :--- | :---: | :--- |
-| **Req 1** | Register new users & passwords (Luke Skywalker, Darth Vader) | TC-FUNC-01, TC-FUNC-02, TC-FUNC-03 | **PASS (Conditional)** | Validation regex passes assignment passwords. If location denied, user is registered in storage but redirected to login. |
-| **Req 2** | Camera or image library photo upload during registration | TC-FUNC-04, TC-FUNC-05 | **FAIL** | Vision camera is supported, but **Image Library/Gallery upload is completely missing**. |
-| **Req 3** | Log in using registered email & password | TC-FUNC-06, TC-FUNC-07 | **FAIL (UX/Func)** | Login works, but **strictly requires GPS permission**. If location is denied, user cannot log in. |
-| **Req 4** | Display profile particulars (height, mass, birth year, gender) via SWAPI | TC-FUNC-08 | **PASS** | Profile displays particulars from selected SWAPI character role. |
-| **Req 5** | Create group & invite members (Luke invites Vader; Vader invites Luke) | TC-FUNC-09, TC-FUNC-10 | **PASS** | Group creation and email-based invitations succeed in MMKV storage. |
-| **Req 6** | In-app notifications of group invitations to invited users | TC-FUNC-11, TC-FUNC-12 | **PARTIAL** | Unread notifications trigger push notification on home screen. Notification channel missing on Android 8+. |
-| **Req 7** | Users can join groups they are invited to | TC-FUNC-13, TC-FUNC-14 | **FAIL (Edge)** | "Join Group" button works in English, but **fails/disappears if user changes language to Indonesian**. |
-| **Req 8** | Group profile displays joined users & last known GPS locations | TC-FUNC-15 | **PARTIAL / FAIL** | Coordinates shown as raw text. **Interactive MapView is commented out in code**. |
-| **Req 9** | Group profile displays starship information via StarWarsAPI | TC-FUNC-16 | **PASS** | Displays starship model, manufacturer, cost, crew, cargo, etc. |
-| **Req 10** | Adhere to Adobe XD design specifications | TC-FUNC-17 | **PARTIAL** | Core layout structure aligns, but missing map view, button styling discrepancies, and hardcoded margins. |
-| **Req 11** | Simple but reasonable authentication & authorization scheme | TC-SEC-01, TC-SEC-02 | **FAIL (Critical)** | **No backend auth or token authorization**. Plaintext passwords stored in unencrypted MMKV. |
-| **Req 12** | Portrait & landscape views on Android/iOS phones & tablets | TC-COMP-01, TC-COMP-02 | **FAIL** | Dimensions are cached statically at boot time (`Metrics`). Orientation change results in broken layouts. |
-| **Req 13** | Internationalization (I18n) and Localization (L10n) | TC-I18N-01, TC-I18N-02 | **PARTIAL** | English and Indonesian supported, but hardcoded English strings remain and switcher missing on several screens. |
+| **Req 1** | Register new users & passwords (Luke Skywalker, Darth Vader) | TC-REG-01, TC-REG-02, TC-REG-03..12, TC-BVA-01..06 | **FAIL (Data Bug)** | Regex validates credentials, but denying GPS permanently locks out the user's email (**DEF-01**, **DEF-09**, **DEF-10**). |
+| **Req 2** | Camera or image library photo upload during registration | TC-PHT-01, TC-PHT-02, TC-PHT-03, TC-PHT-04, TC-SEC-06 | **FAIL (Missing/Bug)** | Photo gallery upload is completely missing (**DEF-02**); camera has false-negative permission bug (**DEF-14**); Base64 bloat (**DEF-11**). |
+| **Req 3** | Log in using registered email & password | TC-LOG-01, TC-LOG-02..07, TC-CMP-05 | **FAIL (UX/Func)** | Denying GPS permission strictly halts login (**DEF-04**); login needlessly re-checks password complexity regex (**DEF-15**). |
+| **Req 4** | Display profile particulars (height, mass, birth year, gender) via SWAPI | TC-PRF-01, TC-PRF-02, TC-PRF-03 | **PASS (Minor UI)** | Profile displays SWAPI role particulars accurately. Minor split-column spacing flaw (**DEF-12**). |
+| **Req 5** | Create group & invite members (Luke invites Vader; Vader invites Luke) | TC-GRP-01, TC-GRP-02, TC-GRP-03, TC-GRP-04, TC-GRP-05 | **PASS** | Bidirectional group creation (Rebel Alliance & Empire) and member invitations succeed in MMKV storage. |
+| **Req 6** | In-app notifications of group invitations to invited users | TC-GRP-06 | **PASS (Local)** | Unread notifications trigger local banner alert and shift focus to Unjoined Group tab. |
+| **Req 7** | Users can join groups they are invited to | TC-JON-01, TC-JON-02 | **FAIL (Locale)** | Joining succeeds in English, but the "Join Group" button disappears completely under Indonesian locale (**DEF-05**). |
+| **Req 8** | Group profile displays joined users & last known GPS locations | TC-DET-01 | **FAIL (Missing)** | Coordinates shown as raw text. `<MapView>` is commented out in code due to missing API key (**DEF-06**). |
+| **Req 9** | Group profile displays starship information via StarWarsAPI | TC-DET-02, TC-DET-03, TC-DET-04 | **FAIL (Search)** | Starship specifications display accurately, but character/starship search fails on static SWAPI mirror (**DEF-03**). |
+| **Req 10** | Adhere to Adobe XD design specifications | TC-REG-12, TC-PRF-03, TC-CMP-03 | **FAIL (Polish)** | Core layouts align, but right-aligned inputs with chevrons (**DEF-10**), off-screen logout button (**DEF-12**), and phantom empty scroll (**DEF-13**). |
+| **Req 11** | Simple but reasonable authentication & authorization scheme | TC-SEC-01, TC-SEC-02, TC-SEC-03, TC-SEC-04, TC-SEC-05 | **FAIL (Critical)** | No token/session security; cleartext passwords stored in unencrypted MMKV (**SEC-01**); release signed with debug key (**SEC-04**). |
+| **Req 12** | Portrait & landscape views on Android/iOS phones & tablets | TC-CMP-01, TC-CMP-02, TC-CMP-04 | **FAIL (Metrics)** | Frozen `Metrics` distorts pie charts on rotation (**DEF-07**); lack of ScrollView locks screen in landscape (**DEF-08**). |
+| **Req 13** | Internationalization (I18n) and Localization (L10n) | TC-JON-02, TC-JON-03, TC-JON-04 | **FAIL (Logic)** | 100% dictionary key parity, but UI logic breaks button visibility when language changes to Indonesian (**DEF-05**). |
 
 ---
 

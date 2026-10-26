@@ -1,3 +1,8 @@
+/**
+ * Test Suite: Missing Required Inputs & Negative Boundary Matrix
+ * Verifies character subset rejections and empty/whitespace handling for password validation.
+ */
+
 const { validatePassword } = require('./auth_validation.test');
 
 const missingInputTests = [
@@ -14,9 +19,39 @@ const missingInputTests = [
   { scenario: 'Valid (All Required Present)', input: 'm4y_th3_F0rc3_b3_w1th_u', expected: true, reason: 'Contains [a-z], [A-Z], [0-9], and [_]' }
 ];
 
-console.log('--- MISSING REQUIRED INPUTS TEST MATRIX ---');
-missingInputTests.forEach(t => {
-  const result = validatePassword(t.input);
-  const status = result === t.expected ? '✔ PASS' : '✖ FAIL';
-  console.log(`${status} | ${t.scenario.padEnd(35)} -> Rejected: ${!result} (${t.reason})`);
-});
+function runMissingInputsTests() {
+  const results = [];
+  missingInputTests.forEach(t => {
+    try {
+      const result = validatePassword(t.input);
+      if (result !== t.expected) {
+        throw new Error(`Expected ${t.expected} but received ${result} (${t.reason})`);
+      }
+      results.push({
+        name: `Input Matrix: ${t.scenario} -> Rejected: ${!result} (${t.reason})`,
+        status: 'PASS'
+      });
+    } catch (err) {
+      results.push({
+        name: `Input Matrix: ${t.scenario}`,
+        status: 'FAIL',
+        error: err.message
+      });
+    }
+  });
+  return results;
+}
+
+if (require.main === module) {
+  console.log('--- MISSING REQUIRED INPUTS TEST MATRIX ---');
+  const results = runMissingInputsTests();
+  results.forEach(r => {
+    const icon = r.status === 'PASS' ? '✔ PASS' : '✖ FAIL';
+    console.log(`${icon} | ${r.name}`);
+  });
+}
+
+module.exports = {
+  runMissingInputsTests,
+  missingInputTests
+};
