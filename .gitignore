@@ -17,3 +17,5 @@ StarWarsApp-main/
 .env
 .DS_Store
 Thumbs.db
+__pycache__/
+*.pyc
