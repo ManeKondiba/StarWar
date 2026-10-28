@@ -116,9 +116,9 @@ Detailed device specifications and environmental records are preserved in [`TEST
 | **Medium Phone** | AVD Emulator | Android 11 (API 30) | 1080 x 1920 (400 dpi) | Portrait | **FAIL** | Inputs right-aligned with navigation chevrons (**DEF-02**); no maxLength bounds (**DEF-03**). |
 | **Small Phone** | AVD Emulator | Android 8.0 (API 26) | 720 x 1280 (320 dpi) | Portrait | **PASS** | Happy path registration and group creation succeed on minimum supported API level. |
 | **Pixel Tablet** | AVD Emulator | Android 14 (API 34) | 2560 x 1600 (276 dpi) | Landscape | **FAIL** | Form containers stretch across 2560px width without max-width constraints (**DEF-18**). |
-| **iPhone 15 Pro** | iOS Archive | iOS 17.2 | 1179 x 2556 (460 ppi) | Portrait | **FAIL** | `Info.plist` lacks `NSPhotoLibraryUsageDescription`; triggers runtime crash on photo access (**DEF-25**). |
-| **iPhone 14** | iOS Archive | iOS 16.4 | 1170 x 2532 (460 ppi) | Portrait | **FAIL** | `NSAllowsArbitraryLoads = true` in `Info.plist` disables Apple Transport Security (**DEF-22**). |
-| **iPad Air (5th Gen)**| Remote Sim | iOS 17.0 | 1640 x 2360 (264 ppi) | Landscape | **PENDING** | Tablet responsive scaling flagged as pending physical lab validation due to host OS constraint. |
+| **iPhone 15 Pro** | Static Code & Config (SAST) | iOS Target (Info.plist) | Audited Config | Portrait | **FAIL (Config)** | `Info.plist` lacks `NSPhotoLibraryUsageDescription`; violates Apple Privacy Policy (**DEF-25**). |
+| **iPhone 14** | Static Code & Config (SAST) | iOS Target (Info.plist) | Audited Config | Portrait | **FAIL (Security)** | `NSAllowsArbitraryLoads = true` in `Info.plist` disables Apple Transport Security (**DEF-22**). |
+| **iPad Air (5th Gen)**| Static Layout Review | iPadOS Target | Audited Config | Landscape | **PENDING (Lab)** | Tablet responsive scaling flagged as pending physical lab validation due to host OS constraint. |
 
 ---
 
