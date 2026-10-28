@@ -393,14 +393,18 @@ To rigorously assess the quality, functional completeness, platform compatibilit
 - **Impact:** The release APK is signed with public debug keys (default debug signing configuration), breaking release authenticity and APK tampering protection.
 - **Remedy:** Configure a secure production keystore with credentials injected securely via CI/CD secrets.
 
-### DEF-14: Camera Permission False Negative Bug & Registration Showstopper
+### DEF-14: Camera View Displays 'Camera permission is not granted' on First Launch Despite Permission Being Allowed in System Settings
 - **Severity:** High / Blocker | **Category:** Functional, Hardware/Permissions & User Flow
+- **Description:** When a user taps the camera icon during account registration for the first time, the screen immediately renders black with an error stating 'Camera permission is not granted'. However, verifying Android system settings confirms that camera permission is already set to 'Allowed'. Because capturing a profile photo is mandatory to complete sign-up and no gallery upload option is provided, the user is completely blocked from registering.
 - **Steps to Reproduce:**
-  1. In Android device/emulator settings, grant Camera permission to `StarWarsApp`.
-  2. Launch app and tap "Create a new account".
-  3. Tap on the camera icon to capture a profile photo.
-- **Expected Result:** The live camera viewfinder should activate immediately, allowing the user to take a profile photo.
-- **Actual Result:** The screen displays: *"Camera permission is not granted"*, even when permission is already granted in system settings.
+  1. Open StarWarsApp -> Tap "Create a new account".
+  2. Fill in form details (Name, Email, Password).
+  3. Tap on the Camera avatar icon to capture profile photo.
+  4. If prompted by OS, grant camera permission ('While using the app').
+  5. Observe the camera screen.
+  6. *(Verification)* Check phone Settings -> Apps -> StarWarsApp -> Permissions -> Camera is set to 'Allowed'.
+- **Expected Result:** The camera screen should detect the granted permission immediately, open the camera viewfinder, and allow the user to take a profile photo.
+- **Actual Result:** The screen turns black and displays: *"Camera permission is not granted"*. The camera viewfinder never initializes, permanently blocking mandatory registration.
 - **Root Cause:**
   1. In `RegisterScreen/index.js`, initial permission state is hardcoded to `false` (`useState(false)`). The app never checks existing permission status on mount (`Camera.getCameraPermissionStatus()`).
   2. When switching to `currRegisterPage === 2`, React renders the fallback view (`"Camera permission is not granted"`) before the asynchronous `Camera.requestCameraPermission()` finishes.

@@ -155,17 +155,17 @@ bugs_data = [
     # 2. DEF-14
     [
         "DEF-14",
-        "Camera Screen Shows 'Permission Not Granted' Even When Allowed (Blocks Registration)",
-        "Even after a user grants camera permissions in the Android system settings, opening the camera inside the app immediately displays a black screen with an error saying 'Camera permission is not granted'. This prevents the user from taking a profile photo and completely blocks account registration.",
+        "Camera View Displays 'Camera permission is not granted' on First Launch Despite Permission Being Allowed in System Settings",
+        "When a user taps the camera icon during account registration for the first time, the screen immediately renders black with an error stating 'Camera permission is not granted'. However, verifying Android system settings confirms that camera permission is already set to 'Allowed'. Because capturing a profile photo is mandatory to complete sign-up and no gallery upload option is provided, the user is completely blocked from registering.",
         "Req 2 & 1",
         "Functional",
         "Blocker",
         "P1",
         "Open",
         "Android 13/14/17 (Emulator & Physical Devices)",
-        "1. In phone Settings -> Apps -> StarWarsApp, grant Camera permission\n2. Open the app and tap 'Create a new account'\n3. Tap the camera avatar to take a profile picture",
-        "The camera should open smoothly and show the viewfinder so the user can take a photo.",
-        "The screen turns black and shows a red error: 'Camera permission is not granted'. The user cannot take a photo and cannot complete registration.",
+        "1. Open StarWarsApp -> Tap 'Create a new account'\n2. Fill in required fields (Name, Email, Password)\n3. Tap on the Camera avatar icon to capture profile photo\n4. If prompted by OS, select 'While using the app' (Grant Permission)\n5. Observe the camera screen\n6. (Verification) Check phone Settings -> Apps -> StarWarsApp -> Permissions -> Camera is set to 'Allowed'",
+        "The camera screen should detect the granted permission immediately, open the camera viewfinder, and allow the user to take a photo.",
+        "The screen turns black and displays the error: 'Camera permission is not granted'. The camera viewfinder never initializes, permanently blocking mandatory registration.",
         "SCREEN PROOF:\nPhone displays 'Camera permission is not granted' despite Camera permission being set to 'Allowed' in Android system settings.",
         "The camera screen sets its initial permission status to 'false' (useState(false)) and does not check the existing permission status when the screen first loads.",
         "Check existing camera permission when the screen opens using Camera.getCameraPermissionStatus() inside a useEffect hook."
