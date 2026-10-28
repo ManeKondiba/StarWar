@@ -23,4 +23,6 @@ __pycache__/
 
 # Personal Study Guides
 DEMONSTRATION_AND_INTERVIEW_GUIDE.md
-*.png
+
+# Allow evidence images
+!Evidence/**/*.png

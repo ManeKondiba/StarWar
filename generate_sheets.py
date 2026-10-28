@@ -69,21 +69,22 @@ for r in summary_data:
             cell.alignment = Alignment(horizontal="center")
 
 # Key Insights Box
-ws_dash["A14"] = "CRITICAL FINDINGS & DEFECT SUMMARY"
+ws_dash["A14"] = "CRITICAL FINDINGS & DEFECT SUMMARY (26 DEFECTS LOGGED 1:1 WITH FAILURES)"
 ws_dash["A14"].font = SECTION_FONT
 insights = [
     ["Defect ID", "Severity", "Impacted Requirement", "Summary Description"],
-    ["SEC-01", "Critical", "Req 11 (Auth Scheme)", "Plaintext Password Storage in MMKV (CWE-312 / OWASP M2)"],
-    ["DEF-14", "Blocker", "Req 2 (Photo Upload)", "Camera permission false negative displays 'permission not granted' even when allowed"],
+    ["DEF-20", "Critical", "Req 11 (Auth Scheme)", "Plaintext Password Storage in MMKV (CWE-312 / OWASP M2)"],
+    ["DEF-06", "Blocker", "Req 2 (Photo Upload)", "Camera permission false negative displays 'permission not granted' even when allowed"],
     ["DEF-01", "High", "Req 1 (Registration)", "Premature storage save locks out user email permanently when location is denied"],
-    ["DEF-04", "High", "Req 3 (Login)", "Mandatory GPS requirement blocks user from logging into the community app"],
-    ["DEF-05", "High", "Req 7 & 13 (Join & I18n)", "'Join Group' button completely disappears when app language is set to Indonesian"],
-    ["DEF-08", "High", "Req 12 (Orientation)", "Landscape mode screen cannot scroll; touch gestures stuck and buttons unreachable"],
-    ["DEF-11", "High", "Req 2 & Task 4 (Perf)", "Uncompressed raw Base64 photo storage in MMKV causes memory bloat and OOM crashes"],
-    ["DEF-09", "Medium", "Req 1 (Validation)", "Unbounded input length / missing maxLength on Registration and Login text fields"],
-    ["DEF-06", "Medium", "Req 8 (GPS Map)", "Interactive MapView is commented out in code (only raw coordinates shown)"],
-    ["DEF-03", "Medium", "Req 4 & 9 (SWAPI)", "SWAPI search query is ignored on static host; app lacks client-side filtering"],
-    ["DEF-15", "Medium", "Req 3 (Login Architecture)", "Creation-time password complexity regex incorrectly executed on Login screen"]
+    ["DEF-08", "High", "Req 3 (Login)", "Mandatory GPS requirement blocks user from logging into the community app"],
+    ["DEF-11", "High", "Req 7 & 13 (Join & I18n)", "'Join Group' button completely disappears when app language is set to Indonesian"],
+    ["DEF-16", "High", "Req 12 (Orientation)", "Landscape mode screen cannot scroll; touch gestures stuck and buttons unreachable"],
+    ["DEF-07", "High", "Req 2 & Task 4 (Perf)", "Uncompressed raw Base64 photo storage in MMKV causes memory bloat and OOM crashes"],
+    ["DEF-03", "Medium", "Req 1 (Validation)", "Unbounded input length / missing maxLength on Registration text fields"],
+    ["DEF-04", "Medium", "Req 1 (Boundary)", "Password complexity regex lacks upper bound constraint (ReDoS risk)"],
+    ["DEF-12", "Medium", "Req 8 (GPS Map)", "Interactive MapView is commented out in code (only raw coordinates shown)"],
+    ["DEF-13", "Medium", "Req 4 & 9 (SWAPI)", "SWAPI search query is ignored on static host; app lacks client-side filtering"],
+    ["DEF-09", "Medium", "Req 3 (Login Architecture)", "Creation-time password complexity regex incorrectly executed on Login screen"]
 ]
 
 r_start = 15
@@ -258,7 +259,7 @@ test_cases_data = [
         "Sample text input",
         "Text is aligned to left (textAlign: 'left'); regular typing inputs do not have navigation chevron (>) icons",
         "Inputs force textAlign: 'right' with label on far left, and every row displays a misleading '>' chevron arrow",
-        "FAIL", "Low", "DEF-10"
+        "FAIL", "Low", "DEF-02"
     ],
 
     # 3. Boundary Value Analysis (BVA)
@@ -310,7 +311,7 @@ test_cases_data = [
         "String of 10,000 'A's",
         "Form input should be constrained by maxLength (e.g. 50 chars for name, 254 for email)",
         "Inputs lack maxLength prop; accepts 10,000+ chars, causing UI layout explosion and storage bloat",
-        "FAIL", "Medium", "DEF-09"
+        "FAIL", "Medium", "DEF-03"
     ],
     [
         "TC-BVA-06", "Input Boundary", "Req 1", "Boundary / Security",
@@ -320,7 +321,7 @@ test_cases_data = [
         "Password: 'A1!' + 9,997 'a's",
         "Password regex should have upper bound (e.g. `.{8,128}$`) to prevent ReDoS",
         "Regex `.{8,}$` has no upper bound; evaluates unbounded strings, risking CPU freeze",
-        "FAIL", "Medium", "DEF-09"
+        "FAIL", "Medium", "DEF-04"
     ],
     [
         "TC-BVA-07", "Input Boundary", "Req 1", "Edge",
@@ -362,7 +363,7 @@ test_cases_data = [
         "Device photo gallery",
         "User should have option to choose between Camera or Image Library as per Requirement 2",
         "Image Library selection is completely missing; only camera capture exists",
-        "FAIL", "Medium", "DEF-02"
+        "FAIL", "Medium", "DEF-05"
     ],
     [
         "TC-PHT-03", "Photo Upload", "Req 2", "Functional / Blocker",
@@ -372,7 +373,7 @@ test_cases_data = [
         "Pre-granted OS permission",
         "Camera viewfinder opens immediately",
         "Screen falsely displays 'Camera permission is not granted'; user blocked from taking photo and registering",
-        "FAIL", "Blocker", "DEF-14"
+        "FAIL", "Blocker", "DEF-06"
     ],
     [
         "TC-PHT-04", "Photo Upload", "Req 2", "Performance / Resource",
@@ -382,7 +383,7 @@ test_cases_data = [
         "Camera snapshot",
         "Image should be cropped/compressed (<200KB) and stored as local file URI",
         "No size limits; entire photo converted to massive raw Base64 string in MMKV, causing memory bloat",
-        "FAIL", "High", "DEF-11"
+        "FAIL", "High", "DEF-07"
     ],
 
     # 5. Login & Authentication (Req 3 & 11)
@@ -434,7 +435,7 @@ test_cases_data = [
         "Valid credentials",
         "Login should succeed; app should function with location-dependent features degraded",
         "User is strictly blocked from logging in; toast: 'You must allow location permission to login'",
-        "FAIL", "High", "DEF-04"
+        "FAIL", "High", "DEF-08"
     ],
     [
         "TC-LOG-06", "Login", "Req 3", "Edge",
@@ -454,7 +455,7 @@ test_cases_data = [
         "Password: simplepassword",
         "Login screen should NOT check creation-time complexity regex; should only verify with backend",
         "`handleLogin()` re-executes validatePassword regex, rejecting passwords client-side and risking ReDoS",
-        "FAIL", "Medium", "DEF-15"
+        "FAIL", "Medium", "DEF-09"
     ],
 
     # 6. Profile & SWAPI Particulars (Req 4)
@@ -486,7 +487,7 @@ test_cases_data = [
         "Profile particulars",
         "Clean, consistent column layout",
         "Uses justifyContent: 'space-between', pushing labels to far left and values to far right with giant gap",
-        "FAIL", "Low", "DEF-12"
+        "FAIL", "Low", "DEF-10"
     ],
 
     # 7. Group Creation & Invitations (Req 5 & 6)
@@ -570,7 +571,7 @@ test_cases_data = [
         "Indonesian locale",
         "'Bergabung ke Grup' (Join Group) button should be displayed and functional",
         "Join button completely disappears because code checks activeTab === 'Unjoined Group' which fails in ID",
-        "FAIL", "High", "DEF-05"
+        "FAIL", "High", "DEF-11"
     ],
 
     # 9. Group Details & GPS Map (Req 8 & 9)
@@ -582,7 +583,7 @@ test_cases_data = [
         "Joined members with GPS coordinates",
         "Interactive MapView renders pins for member coordinates as per Requirement 8",
         "MapView is commented out in code (/* Paid Account API Key needed */); only raw text numbers shown",
-        "FAIL", "Medium", "DEF-06"
+        "FAIL", "Medium", "DEF-12"
     ],
     [
         "TC-DET-02", "Group Details", "Req 9", "Positive",
@@ -602,7 +603,7 @@ test_cases_data = [
         "Search: 'Luke'",
         "List dynamically filters to show only matching characters/starships",
         "Static mirror ignores ?search=; frontend lacks client-side filtering; all 82 items remain visible",
-        "FAIL", "Medium", "DEF-03"
+        "FAIL", "Medium", "DEF-13"
     ],
     [
         "TC-DET-04", "SWAPI Integration", "Req 9", "Edge / Pagination",
@@ -612,7 +613,7 @@ test_cases_data = [
         "SWAPI data list",
         "Next page of results fetched and appended",
         "data.next is undefined on static array; pagination check fails and never loads more",
-        "FAIL", "Low", "DEF-03"
+        "FAIL", "Low", "DEF-14"
     ],
 
     # 10. Compatibility & Responsive Design (Req 12)
@@ -624,7 +625,7 @@ test_cases_data = [
         "Landscape orientation",
         "Layout dynamically adapts; PieChart and cards reflow proportionally",
         "Metrics frozen statically at boot; PieChart and tab bar retain portrait dimensions, distorting UI",
-        "FAIL", "High", "DEF-07"
+        "FAIL", "High", "DEF-15"
     ],
     [
         "TC-CMP-02", "Compatibility", "Req 12", "Compatibility / Blocker",
@@ -634,7 +635,7 @@ test_cases_data = [
         "Landscape orientation",
         "Content should scroll smoothly to reveal buttons below the viewport",
         "Page is frozen/stuck; touch gestures produce no scrolling; Login and Logout buttons unreachable",
-        "FAIL", "High", "DEF-08"
+        "FAIL", "High", "DEF-16"
     ],
     [
         "TC-CMP-03", "Compatibility", "Req 12", "Usability / Layout",
@@ -644,7 +645,7 @@ test_cases_data = [
         "Empty state",
         "Empty placeholder centered cleanly without requiring scrolling",
         "Empty state container hardcodes paddingTop: SCREEN_WIDTH/2 (200px), causing phantom scrolling on empty list",
-        "FAIL", "Low", "DEF-13"
+        "FAIL", "Low", "DEF-17"
     ],
     [
         "TC-CMP-04", "Compatibility", "Req 12", "Compatibility",
@@ -654,7 +655,7 @@ test_cases_data = [
         "Tablet resolution (e.g. 1200x1920)",
         "Tab bar has proportional, standard height (56-64px)",
         "Tab bar height uses SCREEN_HEIGHT * 0.1, making it an excessive 120-140px tall",
-        "FAIL", "Medium", "DEF-07"
+        "FAIL", "Medium", "DEF-18"
     ],
     [
         "TC-CMP-05", "Compatibility", "Req 12", "Compatibility",
@@ -664,7 +665,7 @@ test_cases_data = [
         "iOS platform",
         "Triggers native iOS CoreLocation permission prompt",
         "Code has `if (Platform.OS === 'android')` check and returns true blindly for iOS without requesting authorization",
-        "FAIL", "Medium", "DEF-04"
+        "FAIL", "Medium", "DEF-19"
     ],
 
     # 11. Localization (Req 13)
@@ -698,7 +699,7 @@ test_cases_data = [
         "MMKV storage file",
         "Passwords must be hashed with bcrypt/Argon2 or stored in Android KeyStore",
         "Password stored in 100% clear text without encryption or hashing in MMKV storage",
-        "FAIL", "Critical", "SEC-01"
+        "FAIL", "Critical", "DEF-20"
     ],
     [
         "TC-SEC-02", "Security", "Req 11", "Security / OWASP M1/M9",
@@ -708,7 +709,7 @@ test_cases_data = [
         "AndroidManifest.xml",
         "Production API keys should not be hardcoded in plaintext manifest files",
         "Production key AIzaSyDwBmG2L0YadPd3JE-Wku5Bdd-******** is hardcoded and exposed",
-        "FAIL", "High", "SEC-02"
+        "FAIL", "High", "DEF-21"
     ],
     [
         "TC-SEC-03", "Security", "Req 11", "Security / OWASP M3",
@@ -718,7 +719,7 @@ test_cases_data = [
         "Info.plist",
         "NSAllowsArbitraryLoads should be false; strict HTTPS enforced",
         "NSAllowsArbitraryLoads is set to true, allowing unencrypted HTTP traffic",
-        "FAIL", "High", "SEC-03"
+        "FAIL", "High", "DEF-22"
     ],
     [
         "TC-SEC-04", "Security", "Req 11", "Security / OWASP M9",
@@ -728,7 +729,7 @@ test_cases_data = [
         "build.gradle",
         "Release build must be signed with a secure, private production keystore",
         "buildTypes.release is configured to sign with debug.keystore (insecure default debug key)",
-        "FAIL", "High", "SEC-04"
+        "FAIL", "High", "DEF-23"
     ],
     [
         "TC-SEC-05", "Security", "Req 11", "Security / OWASP M9",
@@ -738,7 +739,7 @@ test_cases_data = [
         "build.gradle",
         "Proguard / R8 obfuscation enabled in release builds to prevent reverse engineering",
         "enableProguardInReleaseBuilds is set to false; bytecode is completely unobfuscated",
-        "FAIL", "Medium", "SEC-04"
+        "FAIL", "Medium", "DEF-24"
     ],
     [
         "TC-SEC-06", "Security", "Req 11", "Security / OWASP M1",
@@ -748,7 +749,7 @@ test_cases_data = [
         "Info.plist",
         "Permission description must exist to prevent iOS runtime crash on photo library access",
         "NSPhotoLibraryUsageDescription key is missing; opening gallery crashes iOS app",
-        "FAIL", "High", "DEF-02"
+        "FAIL", "High", "DEF-25"
     ],
     [
         "TC-SEC-07", "Security", "Req 11", "Security / OWASP M3",
@@ -758,7 +759,7 @@ test_cases_data = [
         "apiCallers.js",
         "API endpoints must use secure HTTPS protocol",
         "API_HOST is hardcoded to unencrypted 'http://localhost:3000'",
-        "FAIL", "Medium", "SEC-03"
+        "FAIL", "Medium", "DEF-26"
     ]
 ]
 
